@@ -5,7 +5,8 @@
 // Em desenvolvimento e producao, configure DATABASE_URL no .env ou no host.
 
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  engineType = "binary"
 }
 
 datasource db {
