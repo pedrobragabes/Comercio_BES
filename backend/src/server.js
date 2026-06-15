@@ -38,7 +38,7 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://unpkg.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https://*.tile.openstreetmap.org", "https://res.cloudinary.com", "https://http2.mlstatic.com", "blob:"],
-      connectSrc: ["'self'", "http://localhost:3000", "https://unpkg.com", "https://api.mercadopago.com", "https://api.mercadolibre.com"],
+      connectSrc: ["'self'", "https://api.comerciobes.com.br", "https://unpkg.com", "https://api.mercadopago.com", "https://api.mercadolibre.com"],
       frameSrc: ["https://sdk.mercadopago.com", "https://*.mercadopago.com"],
       objectSrc: ["'none'"],
       baseUri: ["'self'"],

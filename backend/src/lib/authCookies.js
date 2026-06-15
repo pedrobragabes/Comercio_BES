@@ -4,6 +4,7 @@
 const crypto = require('crypto');
 
 const IS_PROD = process.env.NODE_ENV === 'production';
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || undefined;
 
 // TTLs
 const ACCESS_TOKEN_MS = 15 * 60 * 1000;          // 15 min
@@ -32,6 +33,7 @@ function generateRefreshToken() {
  */
 function setAuthCookies(res, accessToken, refreshToken, csrfToken) {
     const base = { sameSite: 'Lax', secure: IS_PROD };
+    if (COOKIE_DOMAIN) base.domain = COOKIE_DOMAIN;
 
     res.cookie('access_token', accessToken, {
         ...base,
@@ -48,13 +50,25 @@ function setAuthCookies(res, accessToken, refreshToken, csrfToken) {
         path: '/api/auth/refresh',
     });
 
-    // csrf_token NÃO é httpOnly — precisa ser lido pelo JS do cliente
-    res.cookie('csrf_token', csrfToken, {
-        ...base,
+    setCsrfCookie(res, csrfToken);
+}
+
+/**
+ * Define (ou renova) apenas o cookie CSRF.
+ * Usado em endpoints como /me e /csrf que emitem novo token sem tocar access/refresh.
+ * @param {import('express').Response} res
+ * @param {string} csrfToken
+ */
+function setCsrfCookie(res, csrfToken) {
+    const opts = {
+        sameSite: 'Lax',
+        secure: IS_PROD,
         httpOnly: false,
         maxAge: ACCESS_TOKEN_MS,
         path: '/',
-    });
+    };
+    if (COOKIE_DOMAIN) opts.domain = COOKIE_DOMAIN;
+    res.cookie('csrf_token', csrfToken, opts);
 }
 
 /**
@@ -62,15 +76,17 @@ function setAuthCookies(res, accessToken, refreshToken, csrfToken) {
  * @param {import('express').Response} res
  */
 function clearAuthCookies(res) {
-    res.clearCookie('access_token', { path: '/' });
-    res.clearCookie('refresh_token', { path: '/api/auth/refresh' });
-    res.clearCookie('csrf_token', { path: '/' });
+    const domainOpt = COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {};
+    res.clearCookie('access_token', { path: '/', ...domainOpt });
+    res.clearCookie('refresh_token', { path: '/api/auth/refresh', ...domainOpt });
+    res.clearCookie('csrf_token', { path: '/', ...domainOpt });
 }
 
 module.exports = {
     generateCsrfToken,
     generateRefreshToken,
     setAuthCookies,
+    setCsrfCookie,
     clearAuthCookies,
     ACCESS_TOKEN_MS,
     REFRESH_TOKEN_MS,

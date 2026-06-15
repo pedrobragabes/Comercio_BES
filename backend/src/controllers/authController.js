@@ -11,6 +11,7 @@ const {
   generateCsrfToken,
   generateRefreshToken,
   setAuthCookies,
+  setCsrfCookie,
   clearAuthCookies,
 } = require('../lib/authCookies');
 
@@ -189,13 +190,7 @@ async function me(req, res, next) {
 
     // Emite novo csrf_token a cada chamada
     const csrfToken = generateCsrfToken();
-    res.cookie('csrf_token', csrfToken, {
-      httpOnly: false,
-      sameSite: 'Lax',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 15 * 60 * 1000,
-      path: '/',
-    });
+    setCsrfCookie(res, csrfToken);
 
     res.json({
       user: { id: user.id, email: user.email, nome: user.nome, role: user.tipo },
@@ -278,13 +273,7 @@ async function logout(req, res, next) {
 // ---------------------------------------------------------------------------
 async function csrf(req, res) {
   const csrfToken = generateCsrfToken();
-  res.cookie('csrf_token', csrfToken, {
-    httpOnly: false,
-    sameSite: 'Lax',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 15 * 60 * 1000,
-    path: '/',
-  });
+  setCsrfCookie(res, csrfToken);
   res.json({ csrfToken });
 }
 

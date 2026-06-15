@@ -4,7 +4,10 @@
   "description": "API REST e Painel Admin do Comercio BES - Boa Esperanca do Sul",
   "main": "src/server.js",
   "scripts": {
+    "postinstall": "npx prisma generate",
+    "predev": "node scripts/ensure-prisma-client.js",
     "dev": "nodemon src/server.js",
+    "prestart": "node scripts/ensure-prisma-client.js",
     "build": "prisma generate",
     "start": "node src/server.js",
     "seed": "node src/seed.js",
@@ -30,6 +33,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",
+    "prisma": "^6.4.1",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.104.0",
     "bcryptjs": "^2.4.3",
@@ -50,7 +54,6 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.1.9",
-    "prisma": "^6.4.1",
     "supertest": "^7.0.0"
   }
 }
