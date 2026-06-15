@@ -230,7 +230,7 @@ async function seed() {
   console.log(`   Produtos:    ${counts[3]}`);
   console.log(`   Promocoes:   ${counts[4]}`);
   console.log(`   Avaliacoes:  ${counts[5]}`);
-  console.log('\n   Credenciais de teste documentadas no README e nos docs internos.\n');
+  console.log('\n   Admin e comerciante demo criados. Senhas não são exibidas no log.\n');
 }
 
 seed()
