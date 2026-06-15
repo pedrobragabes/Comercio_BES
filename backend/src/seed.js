@@ -50,7 +50,7 @@ async function seed() {
       tipo: 'admin'
     }
   });
-  console.log(`   Admin criado: ${admin.email} (senha: admin123)`);
+  console.log(`   Admin criado: ${admin.email}`);
 
   // 2. Criar usuario comerciante demo
   console.log('2. Criando usuario comerciante demo...');
@@ -65,7 +65,7 @@ async function seed() {
       tipo: 'comerciante'
     }
   });
-  console.log(`   Comerciante demo: ${comerciante.email} (senha: demo123)`);
+  console.log(`   Comerciante demo: ${comerciante.email}`);
 
   // 3. Criar categorias
   console.log('3. Criando categorias...');
@@ -230,8 +230,7 @@ async function seed() {
   console.log(`   Produtos:    ${counts[3]}`);
   console.log(`   Promocoes:   ${counts[4]}`);
   console.log(`   Avaliacoes:  ${counts[5]}`);
-  console.log('\n   Login admin:       admin@comerciobes.com / admin123');
-  console.log('   Login comerciante: comerciante@demo.com / demo123\n');
+  console.log('\n   Credenciais de teste documentadas no README e nos docs internos.\n');
 }
 
 seed()

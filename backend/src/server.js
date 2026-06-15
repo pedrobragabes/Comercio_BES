@@ -23,6 +23,8 @@ const pagamentosRoutes = require('./routes/pagamentos');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const PROJECT_ROOT = path.join(__dirname, '..', '..');
+const BACKEND_ROOT = path.join(__dirname, '..');
 
 // --- Middleware Global ---
 
@@ -156,18 +158,34 @@ app.use(['/admin', '/painel'], (req, res) => {
 app.use(
   '/minha-conta',
   authByCookie,
-  express.static(path.join(__dirname, '..', 'minha-conta'))
+  express.static(path.join(BACKEND_ROOT, 'minha-conta'))
 );
 app.get('/minha-conta/*', authByCookie, (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'minha-conta', 'index.html'));
+  res.sendFile(path.join(BACKEND_ROOT, 'minha-conta', 'index.html'));
 });
 
 // --- Frontend Principal (Se acessado pela porta 3000) ---
-app.get('/login', (req, res) => res.sendFile(path.join(__dirname, '..', '..', 'html', 'login.html')));
-app.get('/cadastro', (req, res) => res.sendFile(path.join(__dirname, '..', '..', 'html', 'cadastro.html')));
+app.get('/', (req, res) => res.sendFile(path.join(PROJECT_ROOT, 'index.html')));
+app.get('/index.html', (req, res) => res.sendFile(path.join(PROJECT_ROOT, 'index.html')));
+app.get('/manifest.json', (req, res) => res.sendFile(path.join(PROJECT_ROOT, 'manifest.json')));
+app.get('/sw.js', (req, res) => res.sendFile(path.join(PROJECT_ROOT, 'sw.js')));
+app.get('/login', (req, res) => res.sendFile(path.join(PROJECT_ROOT, 'html', 'login.html')));
+app.get('/cadastro', (req, res) => res.sendFile(path.join(PROJECT_ROOT, 'html', 'cadastro.html')));
 
 // Servir estáticos da raiz do projeto (index.html, css/, js/, etc.)
-app.use(express.static(path.join(__dirname, '..', '..')));
+const publicStaticOptions = {
+  dotfiles: 'deny',
+  index: false,
+  maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0
+};
+
+// Servir somente assets publicos. Nao exponha backend/, docs/, .env ou codigo-fonte interno.
+app.use('/css', express.static(path.join(PROJECT_ROOT, 'css'), publicStaticOptions));
+app.use('/js', express.static(path.join(PROJECT_ROOT, 'js'), publicStaticOptions));
+app.use('/html', express.static(path.join(PROJECT_ROOT, 'html'), publicStaticOptions));
+app.use('/icons', express.static(path.join(PROJECT_ROOT, 'icons'), publicStaticOptions));
+app.use('/images', express.static(path.join(PROJECT_ROOT, 'images'), publicStaticOptions));
+app.use('/data', express.static(path.join(PROJECT_ROOT, 'data'), publicStaticOptions));
 
 // Servir uploads locais (com cross-origin resource policy para imagens)
 app.use('/uploads', (req, res, next) => {

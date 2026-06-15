@@ -25,6 +25,9 @@
   ],
   "author": "Pedro",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@prisma/client": "^6.4.1",
     "@supabase/ssr": "^0.10.2",

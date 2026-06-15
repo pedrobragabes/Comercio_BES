@@ -1,10 +1,8 @@
 // ===========================================
 // Prisma Schema - Comercio BES
 // ===========================================
-// Para trocar de SQLite para PostgreSQL:
-// 1. Mude provider para "postgresql"
-// 2. Atualize DATABASE_URL no .env
-// 3. Rode: npx prisma db push
+// Banco alvo atual: PostgreSQL.
+// Em desenvolvimento e producao, configure DATABASE_URL no .env ou no host.
 
 generator client {
   provider = "prisma-client-js"

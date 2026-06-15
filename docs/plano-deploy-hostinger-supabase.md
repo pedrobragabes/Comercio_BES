@@ -1,197 +1,128 @@
-# Plano de Deploy Pos-Merge: Hostinger x Supabase
+# Deploy: Hostinger + Supabase
 
-## Resposta curta
+## Decisão recomendada
 
-Sim, **comporta no Hostinger** para o tamanho atual da cidade/projeto.
+Use:
 
-Recomendacao pratica:
+- Hostinger Business para o app Node.js.
+- Supabase PostgreSQL para o banco.
+- Cloudinary para imagens em produção.
 
-1. **App (frontend + backend): Hostinger**
-2. **Banco: Supabase PostgreSQL**
-3. **Imagens: Cloudinary (ja integrado) ou Supabase Storage depois**
+Motivo: é simples, cabe no orçamento, evita banco local/SQLite em produção e mantém a operação leve.
 
-Isso equilibra custo, simplicidade e confiabilidade sem sobrecarregar operacao.
+## A Hostinger Business aguenta?
 
----
+Para o começo de uma cidade pequena, sim, desde que o app seja leve:
 
-## Decisao recomendada
+- Express atendendo API e frontend.
+- Banco fora da Hostinger, no Supabase.
+- Imagens fora do disco local, no Cloudinary.
+- Sem filas pesadas, processamento de imagem ou jobs longos dentro do Node.
 
-### Opcao A - Hostinger + Supabase (recomendada)
+A própria Hostinger documenta suporte a Node.js Apps em Business/Cloud, Express.js, Node 18/20/22/24, deploy por GitHub e painel com métricas de CPU/RAM/I/O.
 
-- Frontend estatico no Hostinger
-- Backend Node no Hostinger (app gerenciada)
-- Banco PostgreSQL no Supabase
+Referência: https://www.hostinger.com/support/how-to-deploy-a-nodejs-website-in-hostinger/
 
-**Por que esta e a melhor para o momento:**
+Se CPU/RAM/I/O chegar perto do limite no hPanel, o próximo passo é Cloud ou VPS, não otimização prematura.
 
-- Mantem o que voce ja assina (Hostinger)
-- Evita SQLite em producao
-- Banco gerenciado com backup e observabilidade melhores
-- Facil de escalar sem trocar toda a infraestrutura
+## API no servidor local?
 
-### Opcao B - Hostinger 100% (funciona, mas com mais risco operacional)
+Não para produção.
 
-- Frontend + Backend no Hostinger
-- Banco MySQL no Hostinger
+Use o servidor local apenas para desenvolvimento ou demonstração interna. Para o público, a API precisa de:
 
-**Quando faz sentido:**
+- HTTPS.
+- Uptime independente do seu PC.
+- URL pública para webhooks.
+- Backups e logs acessíveis.
+- Reinício automático.
 
-- Foco total em reduzir custo inicial
-- Time disposto a lidar com backup/operacao manual do banco
+Mercado Pago, login e pedidos não devem depender do seu computador ligado.
 
-**Risco principal:**
+## Opções
 
-- Menos conforto operacional para crescer marketplace (pedidos, pagamentos, analytics)
+### Opção A - Um app Node.js na Hostinger
 
----
+Recomendada para lançar.
 
-## Arquitetura alvo (simples)
+- Um domínio/app serve frontend e API.
+- Menos CORS.
+- `API_BASE` cai em `/api` no mesmo domínio.
+- Deploy por GitHub em um lugar.
+
+Configuração:
 
 ```txt
-Dominio principal (Hostinger)
-  -> frontend estatico (index, css, js, html)
-
-api.seudominio.com (Hostinger Node)
-  -> Express API + /admin + /painel (ate migrar para /minha-conta)
-
-Supabase (PostgreSQL)
-  -> Banco de dados principal via Prisma
-
-Cloudinary (opcional, recomendado)
-  -> Upload de imagens (evita acoplamento ao disco local)
+Root/repository: raiz do repo
+Install: cd backend && npm ci
+Build: cd backend && npm run build
+Start: cd backend && npm start
+Entry: backend/src/server.js
+Node: 20 ou 22
 ```
 
----
+### Opção B - Frontend estático + API em subdomínio
 
-## Plano de execucao para amanha (pos merge)
+Boa quando quiser separar `www` e `api`.
 
-## Bloco 1 - Pre-flight local (30-45 min)
+- Frontend em `https://comerciobes.com.br`.
+- API em `https://api.comerciobes.com.br`.
+- Exige CORS bem configurado.
+- Exige configurar `window.BES_API_BASE` no HTML.
 
-1. Atualizar branch com merge final
-2. Rodar testes backend
-3. Validar env de producao localmente
-4. Confirmar endpoints criticos: auth, pedidos, pagamentos, upload
-
-Comandos:
-
-```bash
-cd backend
-npm ci
-npm test
+```html
+<script>
+  window.BES_API_BASE = 'https://api.comerciobes.com.br/api';
+</script>
 ```
 
----
+### Opção C - Backend fora da Hostinger
 
-## Bloco 2 - Banco Supabase (30 min)
+Use se a Hostinger limitar Node ou deploy.
 
-1. Criar projeto no Supabase
-2. Copiar `DATABASE_URL` (URI)
-3. Trocar `provider` do Prisma para `postgresql` no deploy branch
-4. Aplicar schema e seed
+- Frontend na Hostinger.
+- API em Render/Railway/Fly/VPS.
+- Banco Supabase.
 
-Comandos:
+Mais flexível, mas aumenta operação e custo.
 
-```bash
-cd backend
-npx prisma generate
-npx prisma db push
-npm run seed
-```
+## GitHub -> Hostinger
 
-Observacao:
+Fluxo recomendado:
 
-- Em producao, evitar SQLite. SQLite e bom para dev local.
+1. `dev` recebe trabalho diário.
+2. `main` representa produção.
+3. Hostinger deploya `main`.
+4. Toda alteração vai por PR.
+5. Depois do merge, o hPanel redeploya automaticamente ou por botão manual.
 
----
+Pelo hPanel:
 
-## Bloco 3 - Backend no Hostinger (45-60 min)
+1. Websites -> Add Website.
+2. Node.js Apps.
+3. Import Git Repository.
+4. Autorizar GitHub.
+5. Escolher repo e branch.
+6. Ajustar comandos.
+7. Configurar env vars.
+8. Deploy.
 
-1. Criar app Node.js no hPanel apontando para `backend`
-2. Build/start command:
-   - Install: `npm ci`
-   - Start: `npm start`
-3. Configurar variaveis de ambiente
-4. Publicar e verificar health (`/api`)
+Para sites estáticos, a Hostinger também tem Git em Advanced -> Git; para Node.js, use o fluxo de Node.js Apps.
 
-Variaveis obrigatorias:
+Referências:
 
-- `NODE_ENV=production`
-- `PORT` (definida pelo ambiente, se necessario)
-- `JWT_SECRET`
-- `JWT_EXPIRES_IN=7d`
-- `DATABASE_URL` (Supabase)
-- `FRONTEND_URL=https://seudominio.com` (pode ser lista separada por virgula)
-- `WEBHOOK_BASE_URL=https://api.seudominio.com`
-- `MERCADO_PAGO_ACCESS_TOKEN` (quando ativar PIX)
-- `MERCADO_PAGO_PUBLIC_KEY` (quando ativar PIX)
+- Node.js Apps: https://www.hostinger.com/support/how-to-deploy-a-nodejs-website-in-hostinger/
+- Git em hPanel para sites estáticos/PHP: https://www.hostinger.com/support/1583302-how-to-deploy-a-git-repository-in-hostinger/
 
-Variaveis opcionais (upload cloud):
+## Checklist de homologação
 
-- `CLOUDINARY_CLOUD_NAME`
-- `CLOUDINARY_API_KEY`
-- `CLOUDINARY_API_SECRET`
-
----
-
-## Bloco 4 - Frontend no Hostinger (20-30 min)
-
-1. Subir arquivos estaticos da raiz
-2. Confirmar que frontend aponta para API publica
-3. Validar login, listagem, pedidos e fluxo basico
-
----
-
-## Bloco 5 - Validacao final (30 min)
-
-Checklist de smoke test em producao:
-
-1. `GET /api` responde 200
-2. Login admin e lojista funcionando
-3. CORS liberando somente dominio oficial
-4. Cadastro e consulta de pedidos funcionando
-5. Upload de imagem funcionando (local ou cloud)
-6. Pagamento:
-   - sem MP configurado: fallback para `na_entrega`
-   - com MP configurado: cria preferencia e retorna checkout URL
-
----
-
-## Go-live com baixo risco
-
-1. Subir primeiro em subdominio de homologacao
-2. Testar 24h com usuarios internos
-3. Virar DNS/rota principal
-4. Monitorar logs nas primeiras 48h
-
----
-
-## Pergunta central: Hostinger sozinho ou Supabase?
-
-Recomendacao final para seu caso:
-
-1. **Use Hostinger + Supabase agora** (melhor equilibrio)
-2. Mantenha frontend/backend no Hostinger
-3. Deixe banco fora (Supabase) para evitar dor de crescimento
-
-Se quiser cortar custo no curtissimo prazo, da para iniciar com MySQL da Hostinger, mas eu trataria como transitorio.
-
----
-
-## Roteiro de evolucao (quando o painel unico entrar)
-
-1. Consolidar `/admin` e `/painel` em `/minha-conta`
-2. Adicionar observabilidade minima (logs por role e endpoint)
-3. Trocar `db push` por fluxo de migrations versionadas
-4. Formalizar rotina de backup e restore testado
-
----
-
-## Conclusao
-
-Para a realidade de cidade pequena, voce nao precisa complicar stack.
-Com o que ja existe hoje, o caminho mais inteligente e:
-
-- **Hostinger para app**
-- **Supabase para banco**
-
-Entrega rapido, cabe no contexto atual e evita retrabalho quando o marketplace crescer.
+- [ ] `GET /api` responde 200.
+- [ ] Home carrega CSS/JS/imagens.
+- [ ] `/backend/package.json` e `/docs/...` não são públicos.
+- [ ] Login admin funciona.
+- [ ] `/minha-conta` abre após login.
+- [ ] Busca e modal de loja funcionam.
+- [ ] WhatsApp abre com mensagem correta.
+- [ ] Seed rodou no Supabase.
+- [ ] CORS só aceita domínio real.
+- [ ] Logs não mostram senhas.

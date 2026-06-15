@@ -1,216 +1,119 @@
 # Comércio BES
 
-> Vitrine e marketplace local de **Boa Esperança do Sul — SP**
+Guia comercial local para Boa Esperança do Sul - SP, com vitrine de lojas, busca, favoritos, catálogo, pedidos leves e painel único por perfil.
 
-Guia comercial digital que conecta moradores ao comércio local, centralizando informações de estabelecimentos em uma experiência moderna, rápida e visual. O projeto evolui de um catálogo estático para um marketplace com pedidos via WhatsApp.
+Este repositório ainda não deve ser tratado como marketplace completo em produção. O escopo seguro de lançamento inicial é: guia comercial + PWA + contato/pedido via WhatsApp + painel básico.
 
-## Funcionalidades
+## Stack
 
-- **Busca inteligente** por nome, categoria e tags (ex.: pizza, farmácia, mecânico)
-- **Filtro por categorias** de comércio (restaurantes, farmácias, pet shops, etc.)
-- **Ordenação** por melhor avaliação, ordem alfabética e mais visitados
-- **Promoções ativas** em destaque
-- **Ranking** por avaliação, visitas e recomendações
-- **Mapa** incorporado com OpenStreetMap
-- **Modal detalhado** de cada estabelecimento (endereço, horário, telefone, status, galeria, WhatsApp)
-- **Deep linking** — compartilhe o link de uma loja específica (ex.: `?loja=pizzaria-bella-massa`)
-- **Catálogo de produtos** com envio de pedido formatado via WhatsApp
-- **Avaliação com estrelas** — salva no banco de dados com média em tempo real
-- **API REST** — backend Node.js/Express com autenticação JWT
-- **Painel Único (RBAC)** (`/minha-conta`) — Interface consolidada para Cliente, Lojista e Admin
-- **Painel administrativo** (via Painel Único) — CRUD de lojas, moderação, usuários, logs
-- **Painel do comerciante** (via Painel Único) — gestão da própria loja, produtos, estoque, pedidos e recebíveis
-- **Sistema de pedidos** — criação, acompanhamento e atualização de status
-- **Pagamentos** — integração com Mercado Pago (PIX)
-- **Upload de imagens** — armazenamento local + Cloudinary opcional
-- **Estatísticas** — rastreamento de visitas, cliques WhatsApp, compartilhamentos
-- **Arquitetura híbrida** — API REST com fallback para `data.json` estático
+| Camada | Tecnologia |
+| --- | --- |
+| Frontend | HTML, CSS e JavaScript vanilla |
+| Backend | Node.js 18+ com Express |
+| Banco | PostgreSQL via Prisma |
+| Banco recomendado | Supabase PostgreSQL |
+| Auth | JWT em cookie httpOnly + bcrypt |
+| Upload | Local em dev; Cloudinary recomendado em produção |
+| Deploy recomendado | Hostinger Node.js App + Supabase |
 
-## Tecnologias
+## Estado atual
 
-| Camada      | Tecnologia                                   |
-| ----------- | -------------------------------------------- |
-| Frontend    | HTML5, CSS3, JavaScript ES6+ (vanilla)       |
-| Backend     | Node.js, Express.js                          |
-| Banco       | Prisma ORM + SQLite (dev) / MySQL ou PostgreSQL (prod) |
-| Auth        | JWT + bcrypt                                 |
-| Upload      | Multer (local) + Cloudinary (opcional)       |
-| Segurança   | Helmet, CORS, Rate Limiting                  |
-| Fontes      | Google Fonts (Syne, DM Sans)                 |
-| Mapa        | Leaflet + OpenStreetMap                      |
+Pronto para homologação:
 
-## Estrutura do Projeto
+- Página pública com busca, categorias, mapa, modal de loja, favoritos e PWA.
+- API Express com rotas de auth, comércios, categorias, avaliações, pedidos, pagamentos, upload e estatísticas.
+- Painel único em `/minha-conta`, protegido por cookie.
+- Testes backend com Jest/Supertest.
+- Prisma configurado para PostgreSQL.
 
-```text
-comercio_bes/
-├── index.html                  # Frontend principal
-├── manifest.json               # PWA manifest
-├── sw.js                       # Service Worker (cache offline)
-├── data/
-│   └── data.json               # Dados estáticos (fallback)
-├── css/
-│   └── style.css               # Estilos do frontend
-├── js/
-│   └── script.js               # Lógica do frontend (API + fallback)
-├── html/
-│   ├── login.html              # Página de login
-│   └── cadastro.html           # Página de cadastro
-├── backend/
-│   ├── package.json             # Dependências do backend
-│   ├── .env                     # Variáveis de ambiente (não versionado)
-│   ├── .env.example             # Template de variáveis de ambiente
-│   ├── prisma/
-│   │   ├── schema.prisma        # Schema do banco de dados
-│   │   └── dev.db               # SQLite de desenvolvimento
-│   ├── src/
-│   │   ├── server.js            # Servidor Express
-│   │   ├── seed.js              # Script de seed (importa data.json)
-│   │   ├── lib/
-│   │   │   └── prisma.js        # PrismaClient singleton
-│   │   ├── middleware/
-│   │   │   ├── auth.js          # Middleware JWT + controle de roles
-│   │   │   ├── upload.js        # Multer + Cloudinary
-│   │   │   └── errorHandler.js  # Handler de erros global
-│   │   ├── routes/
-│   │   │   ├── auth.js          # POST /api/auth/registro, /api/auth/login
-│   │   │   ├── comercios.js     # CRUD /api/comercios
-│   │   │   ├── categorias.js    # GET /api/categorias
-│   │   │   ├── avaliacoes.js    # GET/POST /api/avaliacoes/:slug
-│   │   │   ├── pedidos.js       # GET/POST/PUT /api/pedidos
-│   │   │   ├── pagamentos.js    # POST /api/pagamentos (Mercado Pago)
-│   │   │   ├── upload.js        # POST /api/upload
-│   │   │   └── estatisticas.js  # POST /api/estatisticas/registrar
-│   │   └── controllers/         # Lógica de cada rota
-│   ├── minha-conta/             # Painel Único SPA (Vanilla ESM)
-│   │   ├── index.html
-│   │   ├── css/shell.css
-│   │   └── js/
-│   │       ├── app.js           # Router e gerenciador de estado
-│   │       └── sections/        # Seções de Admin, Cliente e Comerciante
-│   └── uploads/                 # Imagens enviadas (local)
-├── docs/
-│   ├── contexto.md
-│   ├── roadmap.md
-│   ├── security-audit.md
-│   └── skills.md
-└── README.md
-```
+Ainda não pronto para lançamento como marketplace completo:
 
-## Como Executar
+- Checkout público ainda cria pedido local em `localStorage`; precisa integrar `POST /api/pedidos`.
+- PIX Mercado Pago existe no backend, mas falta homologar sandbox, webhook e UI pública.
+- CSRF ainda não cobre todas as rotas mutantes.
+- Webhook do Mercado Pago ainda precisa assinatura e persistência de evento.
+- Dados sensíveis em respostas de pedidos/pagamentos precisam ser filtrados por perfil.
 
-### 1. Backend (API + Admin)
+## Comandos
 
 ```bash
-# Entrar na pasta do backend
 cd backend
-
-# Instalar dependências
 npm install
-
-# Configurar variáveis de ambiente
-cp .env.example .env
-# Edite .env se necessário (JWT_SECRET, porta, etc.)
-
-# Gerar o Prisma Client e criar o banco
-npx prisma generate
-npx prisma db push
-
-# Popular o banco com dados iniciais (importa data.json)
+npm run db:generate
+npm run db:push
 npm run seed
-
-# Iniciar o servidor
 npm run dev
 ```
 
-O backend roda em `http://localhost:3000`:
-- **API:** `http://localhost:3000/api`
-- **Painel Único:** `http://localhost:3000/minha-conta`
+Aplicação local:
 
-**Credenciais de acesso (seed):**
-- Admin: `admin@comerciobes.com` / `admin123`
-- Lojista demo: `comerciante@demo.com` / `demo123`
+- Site: `http://localhost:3000`
+- API: `http://localhost:3000/api`
+- Minha conta: `http://localhost:3000/minha-conta`
 
-### 2. Frontend
+Testes:
 
-Todo o sistema (incluindo o novo _Painel Único SPA_ e as rotas raiz do site) é **Nativamente Servido pelo Express do Backend**. 
-
-Ao rodar o comando `npm run dev` na pasta `backend`, a aplicação inteira fica acessível num único host:
-Acesse **[http://localhost:3000](http://localhost:3000)** no navegador.
-
-> Nota: não é mais necessário levantar servidores HTTP paralelos (como o `http.server` do Python ou `npx serve`) na pasta raiz, pois eles não possuem os fallbacks da History API necessários para que a SPA funcione perfeitamente.
-
-## API REST
-
-### Endpoints principais
-
-| Método | Endpoint | Descrição |
-| ------ | -------- | --------- |
-| `GET` | `/api/comercios` | Listar comércios (busca, filtro, paginação) |
-| `GET` | `/api/comercios/:slug` | Detalhes de um comércio |
-| `POST` | `/api/comercios` | Criar comércio (admin) |
-| `PUT` | `/api/comercios/:slug` | Atualizar comércio (admin) |
-| `DELETE` | `/api/comercios/:slug` | Remover comércio (admin) |
-| `GET` | `/api/categorias` | Listar categorias |
-| `GET` | `/api/avaliacoes/:slug` | Avaliações de um comércio |
-| `POST` | `/api/avaliacoes/:slug` | Enviar avaliação |
-| `POST` | `/api/estatisticas/registrar` | Registrar evento (visita, clique) |
-| `GET` | `/api/pedidos` | Listar pedidos do usuário autenticado |
-| `POST` | `/api/pedidos` | Criar pedido |
-| `PUT` | `/api/pedidos/:id` | Atualizar status do pedido |
-| `POST` | `/api/pagamentos` | Criar pagamento PIX (Mercado Pago) |
-| `POST` | `/api/auth/registro` | Criar conta |
-| `POST` | `/api/auth/login` | Fazer login |
-| `POST` | `/api/upload` | Upload de imagem |
-
-### Query params (`GET /api/comercios`)
-
-| Param | Descrição | Exemplo |
-| ----- | --------- | ------- |
-| `busca` | Texto de busca (nome, tags) | `?busca=pizza` |
-| `categoria` | Filtro por slug de categoria | `?categoria=restaurante` |
-| `aberto` | Filtro por status | `?aberto=true` |
-| `orderBy` | Ordenação | `?orderBy=rating` |
-| `page` | Página | `?page=1` |
-| `limit` | Itens por página | `?limit=20` |
-
-## Deploy (Hostinger Business + Supabase)
-
-### Banco de dados — Supabase (PostgreSQL)
-
-1. Crie um projeto em [supabase.com](https://supabase.com)
-2. Copie a `DATABASE_URL` (Connection String → URI mode)
-3. Altere o `provider` em `prisma/schema.prisma` de `sqlite` para `postgresql`
-4. Configure `DATABASE_URL` no `.env` com a string do Supabase
-5. Execute `npx prisma db push` para criar as tabelas
-6. Execute `npm run seed` para popular os dados
-
-### Hostinger Business — Node.js gerenciado
-
-1. **Frontend:** suba os arquivos estáticos (`index.html`, `minha-conta/`, `css/`, `js/`, `data/`, etc.) via hPanel
-2. **Backend:** crie uma aplicação Node.js gerenciada no hPanel apontando para `backend/`
-3. Configure as variáveis de ambiente no painel (JWT_SECRET, DATABASE_URL, etc.)
-4. O backend será acessível em um subdomínio — atualize `FRONTEND_URL` no `.env` com a URL do frontend
-
-### Variáveis de ambiente necessárias (produção)
-
-```env
-NODE_ENV=production
-JWT_SECRET=<string longa e aleatória>
-DATABASE_URL=postgresql://...  # Supabase connection string
-FRONTEND_URL=https://seudominio.com.br
-CLOUDINARY_CLOUD_NAME=...      # opcional, para upload de imagens
-CLOUDINARY_API_KEY=...
-CLOUDINARY_API_SECRET=...
+```bash
+cd backend
+npm test
 ```
 
-## Roadmap
+## Variáveis de ambiente
 
-Consulte [docs/roadmap.md](docs/roadmap.md) para o plano completo de evolução do projeto.
+Copie `backend/.env.example` para `backend/.env` em desenvolvimento.
 
-## Licença
+Obrigatórias:
 
-Projeto desenvolvido para a comunidade de Boa Esperança do Sul — SP.
+- `DATABASE_URL`
+- `TEST_DATABASE_URL` para rodar `npm test` com banco isolado
+- `JWT_SECRET`
+- `FRONTEND_URL` em produção
 
----
+Opcionais:
 
-Feito com 💚 para a cidade
+- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
+- `MERCADO_PAGO_ACCESS_TOKEN`, `MERCADO_PAGO_PUBLIC_KEY`, `WEBHOOK_BASE_URL`
+
+## Deploy recomendado
+
+Recomendação atual: um app Node.js na Hostinger servindo frontend + API, com banco no Supabase.
+
+Configuração sugerida no Hostinger Node.js App:
+
+- Framework/type: `Other` ou Express.js, se disponível
+- Repository/root: raiz do repositório
+- Install command: `cd backend && npm ci`
+- Build command: `cd backend && npm run build`
+- Start command: `cd backend && npm start`
+- Entry file: `backend/src/server.js`
+- Node.js: 20 ou 22
+
+Se separar frontend e API em domínios diferentes, defina antes de carregar `js/app.js`:
+
+```html
+<script>
+  window.BES_API_BASE = 'https://api.seudominio.com.br/api';
+</script>
+```
+
+## GitHub e Hostinger
+
+A Hostinger suporta deploy via GitHub para Node.js Apps em planos Business/Cloud. O fluxo ideal é:
+
+1. Trabalhar em branch curta.
+2. Abrir PR para `dev`.
+3. Testar localmente.
+4. Fazer merge em `main` apenas quando pronto para produção.
+5. Hostinger faz deploy automático da branch configurada ou você clica em redeploy manual no hPanel.
+
+Referência oficial: https://www.hostinger.com/support/how-to-deploy-a-nodejs-website-in-hostinger/
+
+## Próximo passo de produto
+
+Não lançar PIX, cupons ou push agora. Primeiro fechar um lançamento enxuto:
+
+1. Integrar checkout público com API de pedidos.
+2. Rodar smoke test de login, busca, loja, carrinho, pedido e painel.
+3. Subir homologação na Hostinger com Supabase.
+4. Cadastrar lojas reais e revisar fotos/WhatsApp.
+5. Só depois ativar Mercado Pago.
