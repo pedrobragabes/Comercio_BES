@@ -257,10 +257,25 @@ async function refresh(req, res, next) {
 // ---------------------------------------------------------------------------
 async function logout(req, res, next) {
   try {
-    await prisma.user.update({
-      where: { id: req.userId },
-      data: { refreshTokenHash: null },
-    });
+    const token = req.cookies?.access_token;
+    let userId = req.userId;
+
+    if (!userId && token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+        userId = decoded.id;
+      } catch {
+        userId = null;
+      }
+    }
+
+    if (userId) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { refreshTokenHash: null },
+      });
+    }
+
     clearAuthCookies(res);
     res.json({ message: 'Logout realizado com sucesso' });
   } catch (err) {

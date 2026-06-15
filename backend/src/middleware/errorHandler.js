@@ -23,7 +23,7 @@ function errorHandler(err, req, res, next) {
   }
 
   const databaseUnavailableCodes = new Set(['P1000', 'P1001', 'P1002', 'P1008', 'P1017']);
-  const databaseUnavailableMessage = /can't reach database|timed out|timeout|connect/i.test(err.message || '');
+  const databaseUnavailableMessage = /can't reach database|timed out|timeout|connect|authentication failed|PANIC: timer has gone away|PrismaClientRustPanicError/i.test(err.message || '');
   if (databaseUnavailableCodes.has(err.code) || databaseUnavailableMessage) {
     return res.status(503).json({
       error: 'Banco de dados indisponivel. Verifique DATABASE_URL e conectividade.'

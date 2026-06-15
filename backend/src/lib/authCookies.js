@@ -7,7 +7,8 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || undefined;
 
 // TTLs
-const ACCESS_TOKEN_MS = 15 * 60 * 1000;          // 15 min
+// Producao inicial: uma sessao simples e estavel reduz falhas de refresh/CSRF.
+const ACCESS_TOKEN_MS = 7 * 24 * 60 * 60 * 1000;  // 7 dias
 const REFRESH_TOKEN_MS = 7 * 24 * 60 * 60 * 1000; // 7 dias
 
 /**

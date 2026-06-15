@@ -1,146 +1,84 @@
-# Comércio BES
+# Comercio BES
 
-Guia comercial local para Boa Esperança do Sul - SP, com vitrine de lojas, busca, favoritos, catálogo, pedidos leves e painel único por perfil.
+Guia comercial local de Boa Esperanca do Sul - SP.
 
-Este repositório ainda não deve ser tratado como marketplace completo em produção. O escopo seguro de lançamento inicial é: guia comercial + PWA + contato/pedido via WhatsApp + painel básico.
+O foco atual e colocar o site em producao com estabilidade. Marketplace, PIX e dashboard avancado ficam depois que vitrine, login e painel basico estiverem firmes.
 
-## Stack
+## Stack atual
 
-| Camada | Tecnologia |
-| --- | --- |
-| Frontend | HTML, CSS e JavaScript vanilla |
-| Backend | Node.js 18+ com Express |
-| Banco | PostgreSQL via Prisma |
-| Banco recomendado | Supabase PostgreSQL |
-| Auth | JWT em cookie httpOnly + bcrypt |
-| Upload | Local em dev; Cloudinary recomendado em produção |
-| Deploy recomendado | Hostinger Node.js App + Supabase |
+- Frontend: HTML, CSS e JavaScript vanilla.
+- Backend: Node.js + Express.
+- Banco: PostgreSQL Supabase via Prisma.
+- Deploy: Hostinger Node.js App com diretorio raiz `backend`.
 
-## Estado atual
+## O que funciona agora
 
-Pronto para homologação:
+- Site publico.
+- API em `/api`.
+- Lista de comercios e categorias.
+- Fallback publico via `data/data.json` se o Supabase falhar.
+- Login/cadastro/painel quando `DATABASE_URL`, `DIRECT_URL` e `JWT_SECRET` estao corretos.
 
-- Página pública com busca, categorias, mapa, modal de loja, favoritos e PWA.
-- API Express com rotas de auth, comércios, categorias, avaliações, pedidos, pagamentos, upload e estatísticas.
-- Painel único em `/minha-conta`, protegido por cookie.
-- Testes backend com Jest/Supertest.
-- Prisma configurado para PostgreSQL.
+## O que ainda nao e prioridade
 
-Ainda não pronto para lançamento como marketplace completo:
+- Checkout completo.
+- PIX em producao.
+- Dashboard avancado.
+- CI/CD completo.
 
-- Checkout público ainda cria pedido local em `localStorage`; precisa integrar `POST /api/pedidos`.
-- PIX Mercado Pago existe no backend, mas falta homologar sandbox, webhook e UI pública.
-- CSRF ainda não cobre todas as rotas mutantes.
-- Webhook do Mercado Pago ainda precisa assinatura e persistência de evento.
-- Dados sensíveis em respostas de pedidos/pagamentos precisam ser filtrados por perfil.
+## Rodar local
 
-## Comandos
+Crie `.env` na raiz a partir de `.env.example`.
 
 ```bash
 cd backend
 npm install
-npm run db:generate
 npm run db:push
 npm run seed
 npm run dev
 ```
 
-Aplicação local:
+URLs locais:
 
 - Site: `http://localhost:3000`
 - API: `http://localhost:3000/api`
-- Minha conta: `http://localhost:3000/minha-conta`
+- Health: `http://localhost:3000/api/health`
+- Painel: `http://localhost:3000/minha-conta`
 
-Testes:
+## Deploy Hostinger
 
-```bash
-cd backend
-npm test
+Configuracao da aplicacao:
+
+```txt
+Framework: Express
+Branch: main
+Diretorio raiz: backend
+Gerenciador de pacotes: npm
+Arquivo de entrada: src/server.js
+Node: 20.x
 ```
 
-## Variáveis de ambiente
-
-Copie `.env.example` para `.env` na raiz do projeto em desenvolvimento.
-
-Obrigatórias:
-
-- `DATABASE_URL`
-- `JWT_SECRET`
-- `FRONTEND_URL`
-- `NODE_ENV=production`
-
-Homologação privada:
-
-- `SITE_USERNAME`
-- `SITE_PASSWORD`
-
-Se `SITE_PASSWORD` estiver definido, o site exige senha por Basic Auth antes de abrir qualquer tela.
-
-Opcionais:
-
-- `TEST_DATABASE_URL` para rodar `npm test` com banco isolado
-- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
-- `MERCADO_PAGO_ACCESS_TOKEN`, `MERCADO_PAGO_PUBLIC_KEY`, `WEBHOOK_BASE_URL`
-- `COOKIE_DOMAIN`, normalmente vazio quando frontend e API rodam juntos em `comerciobes.com.br`
-
-## Deploy recomendado
-
-Recomendação atual: um app Node.js na Hostinger servindo frontend + API, com banco no Supabase.
-
-Configuração sugerida no Hostinger Node.js App:
-
-- Framework/type: `Other` ou Express.js, se disponível
-- Branch: `main`
-- Diretório raiz: raiz do repositório, deixe vazio ou `/`
-- Install command: `cd backend && npm ci`
-- Build command: `cd backend && npm run build`
-- Start command: `cd backend && npm start`
-- Entry file: `backend/src/server.js`
-- Node.js: 20 ou 22
-
-Não use `backend` como diretório raiz na Hostinger. O frontend público fica na raiz do repositório (`index.html`, `html/`, `css/`, `js/`, `images/`) e o build copia esses arquivos para `backend/public`.
-
-No painel da Hostinger, importe o `.env` da raiz ou cadastre as mesmas variaveis manualmente. Em produção, o app usa as variáveis do painel; o arquivo `.env` local não deve ser enviado com segredos para o GitHub.
-
-Para homologação na Hostinger, preencha pelo menos:
+Variaveis principais:
 
 ```env
 NODE_ENV=production
-DATABASE_URL=postgresql://...
-JWT_SECRET=...
+DATABASE_URL=postgresql://postgres.PROJECT_REF:SENHA@aws-1-us-east-2.pooler.supabase.com:6543/postgres?pgbouncer=true
+DIRECT_URL=postgresql://postgres.PROJECT_REF:SENHA@aws-1-us-east-2.pooler.supabase.com:5432/postgres
+JWT_SECRET=uma-chave-longa-real
 FRONTEND_URL=https://comerciobes.com.br
 WEBHOOK_BASE_URL=https://comerciobes.com.br
-SITE_USERNAME=comerciobes
-SITE_PASSWORD=uma-senha-forte
 COOKIE_DOMAIN=
+PRISMA_CLIENT_ENGINE_TYPE=binary
 ```
 
-Se separar frontend e API em domínios diferentes, defina antes de carregar `js/app.js`:
+Nao defina `PORT` manualmente na Hostinger.
 
-```html
-<script>
-  window.BES_API_BASE = 'https://api.seudominio.com.br/api';
-</script>
-```
+## Diagnostico
 
-## GitHub e Hostinger
+`/api` deve responder JSON da API.
 
-A Hostinger suporta deploy via GitHub para Node.js Apps em planos Business/Cloud. O fluxo ideal é:
+`/api/health` deve responder `database: "reachable"` para login e painel funcionarem.
 
-1. Trabalhar em branch curta.
-2. Abrir PR para `dev`.
-3. Testar localmente.
-4. Fazer merge em `main` apenas quando pronto para produção.
-5. Hostinger faz deploy automático da branch configurada ou você clica em redeploy manual no hPanel.
+`/api/comercios?limit=3` deve responder dados. Se vier com header `X-Data-Source: data-json`, a vitrine esta usando fallback porque o banco falhou.
 
-Referência oficial: https://www.hostinger.com/support/how-to-deploy-a-nodejs-website-in-hostinger/
-
-## Próximo passo de produto
-
-Não lançar PIX, cupons ou push agora. Primeiro fechar um lançamento enxuto:
-
-1. Integrar checkout público com API de pedidos.
-2. Rodar smoke test de login, busca, loja, carrinho, pedido e painel.
-3. Subir homologação na Hostinger com Supabase.
-4. Cadastrar lojas reais e revisar fotos/WhatsApp.
-5. Só depois ativar Mercado Pago.
+Mais detalhes em `docs/PRODUCAO.md`.

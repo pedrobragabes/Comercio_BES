@@ -28,7 +28,7 @@ router.get('/me', auth, ctrl.me);
 router.post('/refresh', ctrl.refresh);
 
 // --- Logout ---
-router.post('/logout', auth, ctrl.logout);
+router.post('/logout', ctrl.logout);
 
 // --- CSRF ---
 router.get('/csrf', ctrl.csrf);

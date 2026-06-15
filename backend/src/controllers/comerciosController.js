@@ -2,8 +2,23 @@
 // Controller - Comercios
 // ===========================================
 const slugify = require('slugify');
+const fs = require('fs');
+const path = require('path');
 const prisma = require('../lib/prisma');
 const sanitize = require('../lib/sanitize');
+
+const dataJsonCandidates = [
+  path.join(__dirname, '..', '..', 'public', 'data', 'data.json'),
+  path.join(__dirname, '..', '..', '..', 'data', 'data.json')
+];
+
+function getDataJsonPath() {
+  const found = dataJsonCandidates.find(candidate => fs.existsSync(candidate));
+  if (!found) {
+    throw new Error('data.json nao encontrado para fallback publico');
+  }
+  return found;
+}
 
 // Formatar comercio para resposta (converte JSON strings em arrays)
 function formatarComercio(c) {
@@ -62,6 +77,97 @@ function safeParseJSON(str, fallback) {
   } catch {
     return fallback;
   }
+}
+
+function loadFallbackComercios() {
+  const raw = fs.readFileSync(getDataJsonPath(), 'utf8');
+  const data = JSON.parse(raw);
+  return Array.isArray(data.comercios) ? data.comercios : [];
+}
+
+function normalizeCategoriaSlug(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace('roupa', 'moda');
+}
+
+function normalizeFallbackComercio(c) {
+  const categoriaSlug = normalizeCategoriaSlug(c.categoriaSlug || c.categoria);
+  return {
+    ...c,
+    categoriaSlug,
+    totalAvaliacoes: c.totalAvaliacoes || 0,
+    catalogo: c.catalogo || [],
+    descricao: c.descricao || null,
+    createdAt: c.createdAt || null,
+    updatedAt: c.updatedAt || null,
+  };
+}
+
+function filterFallbackComercios(comercios, query) {
+  let result = comercios.map(normalizeFallbackComercio);
+
+  if (query.busca) {
+    const busca = String(query.busca).toLowerCase();
+    result = result.filter(c => (
+      c.nome?.toLowerCase().includes(busca) ||
+      c.endereco?.toLowerCase().includes(busca) ||
+      (c.tags || []).some(t => String(t).toLowerCase().includes(busca))
+    ));
+  }
+
+  if (query.categoria) {
+    const categoria = normalizeCategoriaSlug(query.categoria);
+    result = result.filter(c => c.categoriaSlug === categoria);
+  }
+
+  if (query.aberto !== undefined) {
+    result = result.filter(c => c.aberto === (query.aberto === 'true'));
+  }
+
+  const orderBy = query.orderBy || 'rating';
+  result.sort((a, b) => {
+    if (orderBy === 'nome') return String(a.nome).localeCompare(String(b.nome));
+    if (orderBy === 'visitas') return (b.visitas || 0) - (a.visitas || 0);
+    return (b.recomendados || 0) - (a.recomendados || 0);
+  });
+
+  return result;
+}
+
+function sendFallbackList(req, res, err) {
+  console.warn(`[Comercios] Banco indisponivel; usando data.json: ${err.message}`);
+  const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+  const take = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+  const filtered = filterFallbackComercios(loadFallbackComercios(), req.query);
+  const skip = (page - 1) * take;
+  res.set('X-Data-Source', 'data-json');
+  return res.json({
+    comercios: filtered.slice(skip, skip + take),
+    paginacao: {
+      total: filtered.length,
+      pagina: page,
+      porPagina: take,
+      totalPaginas: Math.ceil(filtered.length / take)
+    }
+  });
+}
+
+function sendFallbackBySlug(req, res, err) {
+  console.warn(`[Comercios] Banco indisponivel; usando data.json: ${err.message}`);
+  const comercio = loadFallbackComercios()
+    .map(normalizeFallbackComercio)
+    .find(c => c.slug === req.params.slug);
+
+  if (!comercio) {
+    return res.status(404).json({ error: 'Comercio nao encontrado' });
+  }
+
+  res.set('X-Data-Source', 'data-json');
+  return res.json(comercio);
 }
 
 // Includes comuns para queries
@@ -147,7 +253,7 @@ async function listar(req, res, next) {
       }
     });
   } catch (err) {
-    next(err);
+    return sendFallbackList(req, res, err);
   }
 }
 
@@ -172,7 +278,7 @@ async function buscarPorSlug(req, res, next) {
 
     res.json(formatarComercio(comercio));
   } catch (err) {
-    next(err);
+    return sendFallbackBySlug(req, res, err);
   }
 }
 

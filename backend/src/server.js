@@ -13,7 +13,6 @@ const cookieParser = require('cookie-parser');
 
 const errorHandler = require('./middleware/errorHandler');
 const { getDatabaseHealth } = require('./lib/dbHealth');
-const { authByCookie } = require('./middleware/auth');
 const authRoutes = require('./routes/auth');
 const comerciosRoutes = require('./routes/comercios');
 const categoriasRoutes = require('./routes/categorias');
@@ -189,13 +188,13 @@ app.use(['/admin', '/painel'], (req, res) => {
   res.redirect(301, '/minha-conta');
 });
 
-// --- Painel Único: Minha Conta (SPA vanilla com auth por cookie) ---
+// --- Painel Unico: Minha Conta (SPA vanilla)
+// A SPA carrega para todos e valida sessao via /api/auth/me.
 app.use(
   '/minha-conta',
-  authByCookie,
   express.static(path.join(BACKEND_ROOT, 'minha-conta'))
 );
-app.get('/minha-conta/*', authByCookie, (req, res) => {
+app.get('/minha-conta/*', (req, res) => {
   res.sendFile(path.join(BACKEND_ROOT, 'minha-conta', 'index.html'));
 });
 
