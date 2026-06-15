@@ -110,6 +110,30 @@ Pelo hPanel:
 
 As variaveis ficam centralizadas no `.env` da raiz do projeto em desenvolvimento. Na Hostinger, use **Importar .env** ou cadastre os mesmos pares chave/valor manualmente no painel. Em producao, o app deve depender das variaveis do painel, nao de um arquivo com segredos versionado.
 
+Variaveis minimas para homologacao:
+
+```env
+NODE_ENV=production
+DATABASE_URL=postgresql://...
+JWT_SECRET=...
+FRONTEND_URL=https://comerciobes.com.br
+WEBHOOK_BASE_URL=https://comerciobes.com.br
+SITE_USERNAME=comerciobes
+SITE_PASSWORD=uma-senha-forte
+COOKIE_DOMAIN=
+```
+
+Variaveis opcionais para ativar recursos:
+
+```env
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+MERCADO_PAGO_ACCESS_TOKEN=
+MERCADO_PAGO_PUBLIC_KEY=
+TEST_DATABASE_URL=
+```
+
 Para sites estáticos, a Hostinger também tem Git em Advanced -> Git; para Node.js, use o fluxo de Node.js Apps.
 
 ## GitHub Actions

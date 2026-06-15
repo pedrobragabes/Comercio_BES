@@ -65,9 +65,9 @@ Copie `.env.example` para `.env` na raiz do projeto em desenvolvimento.
 Obrigatórias:
 
 - `DATABASE_URL`
-- `TEST_DATABASE_URL` para rodar `npm test` com banco isolado
 - `JWT_SECRET`
-- `FRONTEND_URL` em produção
+- `FRONTEND_URL`
+- `NODE_ENV=production`
 
 Homologação privada:
 
@@ -78,8 +78,10 @@ Se `SITE_PASSWORD` estiver definido, o site exige senha por Basic Auth antes de 
 
 Opcionais:
 
+- `TEST_DATABASE_URL` para rodar `npm test` com banco isolado
 - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
 - `MERCADO_PAGO_ACCESS_TOKEN`, `MERCADO_PAGO_PUBLIC_KEY`, `WEBHOOK_BASE_URL`
+- `COOKIE_DOMAIN`, normalmente vazio quando frontend e API rodam juntos em `comerciobes.com.br`
 
 ## Deploy recomendado
 
@@ -97,6 +99,19 @@ Configuração sugerida no Hostinger Node.js App:
 - Node.js: 20 ou 22
 
 No painel da Hostinger, importe o `.env` da raiz ou cadastre as mesmas variaveis manualmente. Em produção, o app usa as variáveis do painel; o arquivo `.env` local não deve ser enviado com segredos para o GitHub.
+
+Para homologação na Hostinger, preencha pelo menos:
+
+```env
+NODE_ENV=production
+DATABASE_URL=postgresql://...
+JWT_SECRET=...
+FRONTEND_URL=https://comerciobes.com.br
+WEBHOOK_BASE_URL=https://comerciobes.com.br
+SITE_USERNAME=comerciobes
+SITE_PASSWORD=uma-senha-forte
+COOKIE_DOMAIN=
+```
 
 Se separar frontend e API em domínios diferentes, defina antes de carregar `js/app.js`:
 

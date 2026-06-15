@@ -137,12 +137,9 @@ app.get('/minha-conta/*', requireAuth, (req, res) => {
 });
 ```
 
-### Legados controlados por flag
+### Legados
 
-```
-LEGACY_PANELS=on   → /admin e /painel funcionam normalmente
-LEGACY_PANELS=off  → /admin e /painel retornam 301 → /minha-conta
-```
+Estado atual: `/admin` e `/painel` redirecionam permanentemente para `/minha-conta`. A flag planejada `LEGACY_PANELS` foi retirada do escopo ativo.
 
 ---
 
@@ -419,7 +416,7 @@ Quando `stores.length > 1` o topbar exibe um `<select>` de troca de loja:
 - [ ] Cookie httpOnly + CSRF + refresh + rate limit no login
 - [ ] `backend/minha-conta/index.html` com shell estático + `InicioSection` vazia
 - [ ] Express serve `GET /minha-conta/*` com SPA fallback
-- [ ] Variável `LEGACY_PANELS` controlando redirect dos painéis legados
+- [x] `/admin` e `/painel` redirecionam para `/minha-conta`
 
 **DoD:** login via cookie funciona; `/minha-conta` renderiza shell com seção início para os 3 roles.
 
@@ -453,7 +450,7 @@ Quando `stores.length > 1` o topbar exibe um `<select>` de troca de loja:
 - [ ] Testes E2E RBAC (Playwright): 1 fluxo completo por role + 1 teste de negação por role
 - [ ] Testes unitários de `capabilities.js` e `requireCapability`
 - [ ] Acessibilidade: sidebar com keyboard-nav, foco visível, `aria-current="page"` na rota ativa
-- [ ] `LEGACY_PANELS=off` por padrão em produção; `/admin` e `/painel` → 301 para `/minha-conta`
+- [x] `/admin` e `/painel` retornam 301 para `/minha-conta`
 - [ ] Observabilidade: log estruturado `{ userId, cap, route, status: 403 }` em cada negação de capability
 - [ ] CSP revisada: `script-src 'self'` sem `'unsafe-inline'` novo
 
@@ -473,7 +470,7 @@ Quando `stores.length > 1` o topbar exibe um `<select>` de troca de loja:
 8. **Acessibilidade:** `aria-current="page"` no item ativo da sidebar (verificável no DevTools → Elements)
 9. **Responsividade:** sidebar colapsa para drawer em viewport `< 768px`
 10. **Consistência visual:** CSS vars de cor e tipografia idênticas às de `docs/visual.md` (diff de variáveis)
-11. **Legados:** com `LEGACY_PANELS=off`, `/admin` e `/painel` retornam `301 Moved Permanently` → `/minha-conta`
+11. **Legados:** `/admin` e `/painel` retornam `301 Moved Permanently` → `/minha-conta`
 12. **Audit log:** ações criar usuário, deletar usuário, moderar loja e alterar role geram entrada em `AuditLog`
 
 ---
@@ -503,9 +500,7 @@ Quando `stores.length > 1` o topbar exibe um `<select>` de troca de loja:
 
 ## 17. Perguntas Remanescentes
 
-1. **Tempo de convivência dos legados:** por quanto tempo manter `/admin` e `/painel` com `LEGACY_PANELS=on` antes de setar `off` em produção? *(Sugestão: 2 semanas após homologação completa da Fase 3)*
-
-2. **Audit log storage:** armazenar em tabela Prisma `AuditLog` (Postgres) ou em arquivo rotativo (ex.: winston file transport)? *(Sugestão: tabela Prisma — já está no schema, consultável via admin e exportável)*
+1. **Audit log storage:** armazenar em tabela Prisma `AuditLog` (Postgres) ou em arquivo rotativo (ex.: winston file transport)? *(Sugestão: tabela Prisma — já está no schema, consultável via admin e exportável)*
 
 ---
 
