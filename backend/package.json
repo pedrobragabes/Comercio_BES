@@ -8,7 +8,7 @@
     "predev": "node scripts/ensure-prisma-client.js",
     "dev": "nodemon src/server.js",
     "prestart": "node scripts/ensure-prisma-client.js",
-    "build": "node scripts/run-with-root-env.js prisma generate",
+    "build": "node scripts/run-with-root-env.js prisma generate && node scripts/copy-public-assets.js",
     "start": "node src/server.js",
     "seed": "node src/seed.js",
     "db:generate": "node scripts/run-with-root-env.js prisma generate",

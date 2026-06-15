@@ -91,12 +91,14 @@ Configuração sugerida no Hostinger Node.js App:
 
 - Framework/type: `Other` ou Express.js, se disponível
 - Branch: `main`
-- Diretório raiz: `backend`
-- Install command: `npm ci`
-- Build command: `npm run build`
-- Start command: `npm start`
-- Entry file: `src/server.js`
+- Diretório raiz: raiz do repositório, deixe vazio ou `/`
+- Install command: `cd backend && npm ci`
+- Build command: `cd backend && npm run build`
+- Start command: `cd backend && npm start`
+- Entry file: `backend/src/server.js`
 - Node.js: 20 ou 22
+
+Não use `backend` como diretório raiz na Hostinger. O frontend público fica na raiz do repositório (`index.html`, `html/`, `css/`, `js/`, `images/`) e o build copia esses arquivos para `backend/public`.
 
 No painel da Hostinger, importe o `.env` da raiz ou cadastre as mesmas variaveis manualmente. Em produção, o app usa as variáveis do painel; o arquivo `.env` local não deve ser enviado com segredos para o GitHub.
 

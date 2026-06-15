@@ -7,6 +7,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
+const fs = require('fs');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 
@@ -25,6 +26,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const PROJECT_ROOT = path.join(__dirname, '..', '..');
 const BACKEND_ROOT = path.join(__dirname, '..');
+const BUILT_PUBLIC_ROOT = path.join(BACKEND_ROOT, 'public');
+const FRONTEND_ROOT = fs.existsSync(path.join(BUILT_PUBLIC_ROOT, 'index.html'))
+  ? BUILT_PUBLIC_ROOT
+  : PROJECT_ROOT;
 const SITE_USERNAME = process.env.SITE_USERNAME || 'comerciobes';
 const SITE_PASSWORD = process.env.SITE_PASSWORD || '';
 
@@ -192,12 +197,12 @@ app.get('/minha-conta/*', authByCookie, (req, res) => {
 });
 
 // --- Frontend Principal (Se acessado pela porta 3000) ---
-app.get('/', (req, res) => res.sendFile(path.join(PROJECT_ROOT, 'index.html')));
-app.get('/index.html', (req, res) => res.sendFile(path.join(PROJECT_ROOT, 'index.html')));
-app.get('/manifest.json', (req, res) => res.sendFile(path.join(PROJECT_ROOT, 'manifest.json')));
-app.get('/sw.js', (req, res) => res.sendFile(path.join(PROJECT_ROOT, 'sw.js')));
-app.get('/login', (req, res) => res.sendFile(path.join(PROJECT_ROOT, 'html', 'login.html')));
-app.get('/cadastro', (req, res) => res.sendFile(path.join(PROJECT_ROOT, 'html', 'cadastro.html')));
+app.get('/', (req, res) => res.sendFile(path.join(FRONTEND_ROOT, 'index.html')));
+app.get('/index.html', (req, res) => res.sendFile(path.join(FRONTEND_ROOT, 'index.html')));
+app.get('/manifest.json', (req, res) => res.sendFile(path.join(FRONTEND_ROOT, 'manifest.json')));
+app.get('/sw.js', (req, res) => res.sendFile(path.join(FRONTEND_ROOT, 'sw.js')));
+app.get('/login', (req, res) => res.redirect(301, '/html/login.html'));
+app.get('/cadastro', (req, res) => res.redirect(301, '/html/cadastro.html'));
 
 // Servir estáticos da raiz do projeto (index.html, css/, js/, etc.)
 const publicStaticOptions = {
@@ -207,12 +212,12 @@ const publicStaticOptions = {
 };
 
 // Servir somente assets publicos. Nao exponha backend/, docs/, .env ou codigo-fonte interno.
-app.use('/css', express.static(path.join(PROJECT_ROOT, 'css'), publicStaticOptions));
-app.use('/js', express.static(path.join(PROJECT_ROOT, 'js'), publicStaticOptions));
-app.use('/html', express.static(path.join(PROJECT_ROOT, 'html'), publicStaticOptions));
-app.use('/icons', express.static(path.join(PROJECT_ROOT, 'icons'), publicStaticOptions));
-app.use('/images', express.static(path.join(PROJECT_ROOT, 'images'), publicStaticOptions));
-app.use('/data', express.static(path.join(PROJECT_ROOT, 'data'), publicStaticOptions));
+app.use('/css', express.static(path.join(FRONTEND_ROOT, 'css'), publicStaticOptions));
+app.use('/js', express.static(path.join(FRONTEND_ROOT, 'js'), publicStaticOptions));
+app.use('/html', express.static(path.join(FRONTEND_ROOT, 'html'), publicStaticOptions));
+app.use('/icons', express.static(path.join(FRONTEND_ROOT, 'icons'), publicStaticOptions));
+app.use('/images', express.static(path.join(FRONTEND_ROOT, 'images'), publicStaticOptions));
+app.use('/data', express.static(path.join(FRONTEND_ROOT, 'data'), publicStaticOptions));
 
 // Servir uploads locais (com cross-origin resource policy para imagens)
 app.use('/uploads', (req, res, next) => {

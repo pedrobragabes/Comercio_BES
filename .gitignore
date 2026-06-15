@@ -10,6 +10,7 @@ Desktop.ini
 
 # Node
 node_modules/
+backend/public/
 
 # Environment variables
 .env

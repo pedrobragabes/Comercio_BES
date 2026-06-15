@@ -54,13 +54,15 @@ Configuração:
 
 ```txt
 Branch: main
-Diretorio raiz: backend
-Install: npm ci
-Build: npm run build
-Start: npm start
-Entry: src/server.js
+Diretorio raiz: raiz do repositorio, vazio ou /
+Install: cd backend && npm ci
+Build: cd backend && npm run build
+Start: cd backend && npm start
+Entry: backend/src/server.js
 Node: 20 ou 22
 ```
+
+Nao use `backend` como diretorio raiz na Hostinger. Se usar, a Hostinger pode publicar apenas a pasta backend e o servidor nao encontra `index.html`, `html/cadastro.html`, CSS, JS e imagens do frontend.
 
 ### Opção B - Frontend estático + API em subdomínio
 
