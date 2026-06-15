@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comércio BES — Boa Esperança do Sul</title>
+  <meta name="description"
+    content="Guia comercial completo de Boa Esperança do Sul. Restaurantes, farmácias, mecânicas e muito mais.">
+  <meta name="theme-color" content="#047857">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ComércioBES">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+  <style>
+    /* ===== AUTH NAVBAR ===== */
+    .nav-login-btn {
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 9px 20px;
+      border-radius: 100px;
+      background: var(--escuro);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-login-btn:hover {
+      background: var(--verde-escuro);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(4, 120, 87, 0.3);
+      transform: scale(1.03);
+    }
+
+    /* Post-login icon buttons */
+    .nav-user-btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1.5px solid var(--borda);
+      background: #fff;
+      cursor: pointer;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      position: relative;
+      text-decoration: none;
+      color: var(--texto);
+    }
+
+    .nav-icon-btn:hover {
+      background: var(--escuro);
+      border-color: var(--escuro);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+    }
+
+    .nav-icon-btn .btn-tooltip {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--escuro);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 100px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .nav-icon-btn:hover .btn-tooltip {
+      opacity: 1;
+    }
+
+    /* Account Dropdown Menu */
+    .nav-account-wrapper {
+      position: relative;
+    }
+
+    .conta-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 8px;
+      background: #fff;
+      border: 1.5px solid var(--borda);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      padding: 12px 0;
+      min-width: 200px;
+      z-index: 1000;
+      animation: dropdownSlideDown 0.2s ease-out;
+    }
+
+    .conta-dropdown.open {
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes dropdownSlideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .conta-user-info {
+      padding: 12px 16px;
+      font-size: 14px;
+      color: var(--texto);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      border-bottom: 1px solid var(--borda);
+    }
+
+    .conta-user-info strong {
+      color: var(--escuro);
+      font-weight: 700;
+    }
+
+    .conta-logout-btn {
+      padding: 10px 16px;
+      background: none;
+      border: none;
+      font-size: 14px;
+      color: #FF4444;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .conta-logout-btn:hover {
+      background: #FFF5F5;
+    }
+
+    /* Dark mode for dropdown */
+    body.dark-mode .conta-dropdown {
+      background: #181818;
+      border-color: #2f2f2f;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    body.dark-mode .conta-user-info {
+      color: #f1f1f1;
+      border-bottom-color: #2f2f2f;
+    }
+
+    body.dark-mode .conta-user-info strong {
+      color: var(--verde);
+    }
+
+    body.dark-mode .conta-logout-btn:hover {
+      background: rgba(255, 68, 68, 0.15);
+    }
+
+    /* Cart badge counter */
+    .nav-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--verde);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--creme);
+    }
+
+    body.dark-mode .nav-badge {
+      border-color: #0f0f0f;
+    }
+  </style>
+</head>
+
+<body>
+
+  <svg width="0" height="0" style="position:absolute;left:-9999px;overflow:hidden" aria-hidden="true" focusable="false">
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m21 21-4.3-4.3" />
+    </symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24">
+      <path d="M12 2s5 4.5 5 9a5 5 0 1 1-10 0c0-3 2-5.5 5-9Z" />
+    </symbol>
+    <symbol id="i-star" viewBox="0 0 24 24">
+      <path d="m12 3 2.9 5.9 6.5 1-4.7 4.6 1.1 6.5L12 18l-5.8 3 1.1-6.5-4.7-4.6 6.5-1Z" />
+    </symbol>
+    <symbol id="i-map" viewBox="0 0 24 24">
+      <path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z" />
+      <path d="M9 3v15" />
+      <path d="M15 6v15" />
+    </symbol>
+    <symbol id="i-map-pin" viewBox="0 0 24 24">
+      <path d="M12 22s7-5.5 7-12a7 7 0 1 0-14 0c0 6.5 7 12 7 12Z" />
+      <circle cx="12" cy="10" r="2.5" />
+    </symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24">
+      <path d="M8 4h8v4a4 4 0 0 1-8 0Z" />
+      <path d="M6 6H4a2 2 0 0 0 2 3" />
+      <path d="M18 6h2a2 2 0 0 1-2 3" />
+      <path d="M12 12v4" />
+      <path d="M8 20h8" />
+    </symbol>
+    <symbol id="i-user" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20a8 8 0 0 1 16 0" />
+    </symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24">
+      <path d="M20.8 8.6A5.5 5.5 0 0 0 12 5.2 5.5 5.5 0 0 0 3.2 8.6c0 5 8.8 10.2 8.8 10.2s8.8-5.2 8.8-10.2Z" />
+    </symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24">
+      <path d="M6 8h12l-1 12H7Z" />
+      <path d="M9 8a3 3 0 0 1 6 0" />
+    </symbol>
+    <symbol id="i-pill" viewBox="0 0 24 24">
+      <path d="M10 4a6 6 0 0 1 8.5 8.5L12.5 18A6 6 0 1 1 4 9.5Z" />
+      <path d="m8 16 8-8" />
+    </symbol>
+    <symbol id="i-wrench" viewBox="0 0 24 24">
+      <path d="M14 7a4 4 0 0 0 5 5l-8.5 8.5a2 2 0 0 1-2.8-2.8L16.2 9.2A4 4 0 0 0 14 7Z" />
+    </symbol>
+    <symbol id="i-paw" viewBox="0 0 24 24">
+      <circle cx="7" cy="7" r="2" />
+      <circle cx="17" cy="7" r="2" />
+      <circle cx="5" cy="12" r="2" />
+      <circle cx="19" cy="12" r="2" />
+      <path d="M12 19c-2.6 0-4.8-1.4-4.8-3.2S9.4 13 12 13s4.8 1.4 4.8 2.8S14.6 19 12 19Z" />
+    </symbol>
+    <symbol id="i-scissors" viewBox="0 0 24 24">
+      <circle cx="6" cy="6" r="2.5" />
+      <circle cx="6" cy="18" r="2.5" />
+      <path d="m20 4-9.5 6" />
+      <path d="m20 20-9.5-6" />
+    </symbol>
+    <symbol id="i-shopping-cart" viewBox="0 0 24 24">
+      <circle cx="9" cy="20" r="1.8" />
+      <circle cx="17" cy="20" r="1.8" />
+      <path d="M3 4h2l2.2 10h10.6l2-7H7.2" />
+    </symbol>
+    <symbol id="i-shirt" viewBox="0 0 24 24">
+      <path d="m8 5 4-2 4 2 3 4-3 2v10H8V11L5 9Z" />
+    </symbol>
+    <symbol id="i-bread" viewBox="0 0 24 24">
+      <path d="M5 11a5 5 0 0 1 14 0v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z" />
+      <path d="M9 8h.01" />
+      <path d="M15 8h.01" />
+    </symbol>
+    <symbol id="i-hammer" viewBox="0 0 24 24">
+      <path d="m14 3 7 7-2 2-7-7Z" />
+      <path d="m5 21 10-10" />
+    </symbol>
+    <symbol id="i-megaphone" viewBox="0 0 24 24">
+      <path d="M3 11v2h4l7 4V7l-7 4Z" />
+      <path d="M14 9h2a4 4 0 0 1 0 8h-2" />
+    </symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24">
+      <path
+        d="M22 16.9v3a2 2 0 0 1-2.2 2A19 19 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.5 3a2 2 0 0 1-.6 1.8L8 9.5a16 16 0 0 0 6.5 6.5l1-.9a2 2 0 0 1 1.8-.6l3 .5A2 2 0 0 1 22 16.9Z" />
+    </symbol>
+    <symbol id="i-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 10v6" />
+      <path d="M12 7h.01" />
+    </symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24">
+      <path d="M12 5v14" />
+      <path d="M5 12h14" />
+    </symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24">
+      <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+      <circle cx="12" cy="12" r="2.5" />
+    </symbol>
+    <symbol id="i-message" viewBox="0 0 24 24">
+      <path d="M21 12a8 8 0 0 1-8 8H7l-4 2 1.3-4A8 8 0 1 1 21 12Z" />
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="m5 12 4 4 10-10" />
+    </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+    </symbol>
+  </svg>
+
+
+  <!-- ===== MAIN SITE ===== -->
+  <div id="main-site">
+
+    <!-- NAVBAR -->
+    <nav>
+      <div class="nav-inner">
+        <a href="#" class="nav-logo">Comércio<span>BES</span></a>
+        <ul class="nav-links">
+          <li><a href="#busca" class="active"><svg class="icon icon-sm">
+                <use href="#i-search"></use>
+              </svg> Buscar</a></li>
+          <li><a href="#promos"><svg class="icon icon-sm">
+                <use href="#i-flame"></use>
+              </svg> Promoções</a></li>
+          <li><a href="#ranking"><svg class="icon icon-sm">
+                <use href="#i-star"></use>
+              </svg> Ranking</a></li>
+          <li><a href="#mapa"><svg class="icon icon-sm">
+                <use href="#i-map"></use>
+              </svg> Mapa</a></li>
+          <li><a href="#roadmap"><svg class="icon icon-sm">
+                <use href="#i-info"></use>
+              </svg> Roadmap</a></li>
+        </ul>
+        <div class="nav-actions">
+          <a href="html/login.html" class="nav-login-btn" id="nav-login">Fazer Login</a>
+          <div class="nav-user-btns" id="nav-user-btns" style="display:none;">
+            <button class="nav-icon-btn" onclick="toggleDarkMode()" title="Tema escuro" id="btn-dark-mode"><svg
+                class="icon icon-md">
+                <use href="#i-moon"></use>
+              </svg></button>
+            <div class="nav-account-wrapper">
+              <button class="nav-icon-btn" onclick="toggleContaMenu()" title="Conta"><svg class="icon icon-md">
+                  <use href="#i-user"></use>
+                </svg></button>
+              <div class="conta-dropdown" id="conta-dropdown">
+                <div class="conta-user-info">
+                  Olá <strong id="conta-username">Usuário</strong>!
+                </div>
+                <button class="conta-logout-btn" onclick="fazerLogout()">Sair</button>
+              </div>
+            </div>
+            <button class="nav-icon-btn" onclick="abrirFavoritos()" title="Favoritos"><svg class="icon icon-md">
+                <use href="#i-heart"></use>
+              </svg></button>
+            <button class="nav-icon-btn" onclick="toggleCarrinhoDrawer()" title="Carrinho">
+              <svg class="icon icon-md">
+                <use href="#i-shopping-cart"></use>
+              </svg> <span class="nav-badge" id="cart-badge"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- HERO + BUSCA -->
+    <section class="hero" id="busca">
+      <div class="hero-label">
+        <div class="dot"></div>
+        Guia Comercial Atualizado
+      </div>
+      <h1>Encontre tudo em<br><em>Boa Esperança do Sul</em></h1>
+      <p>Restaurantes, farmácias, mecânicas, pet shops e muito mais</p>
+
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="pizza, mecânico, farmácia, cabelo..."
+          oninput="filtrarBusca(this.value)" onkeydown="if(event.key==='Enter')filtrarBusca(this.value)">
+        <button class="search-btn" onclick="filtrarBusca(document.getElementById('search-input').value)">
+          <svg class="icon icon-sm">
+            <use href="#i-search"></use>
+          </svg> Buscar
+        </button>
+      </div>
+
+      <div class="search-tags">
+        <span class="search-tag" onclick="setSearch('pizza')"><svg class="icon icon-xs">
+            <use href="#i-shopping-cart"></use>
+          </svg> Pizza</span>
+        <span class="search-tag" onclick="setSearch('farmácia')"><svg class="icon icon-xs">
+            <use href="#i-pill"></use>
+          </svg> Farmácia</span>
+        <span class="search-tag" onclick="setSearch('mecânico')"><svg class="icon icon-xs">
+            <use href="#i-wrench"></use>
+          </svg> Mecânico</span>
+        <span class="search-tag" onclick="setSearch('pet')"><svg class="icon icon-xs">
+            <use href="#i-paw"></use>
+          </svg> Pet Shop</span>
+        <span class="search-tag" onclick="setSearch('cabelo')"><svg class="icon icon-xs">
+            <use href="#i-scissors"></use>
+          </svg> Cabelo</span>
+        <span class="search-tag" onclick="setSearch('roupa')"><svg class="icon icon-xs">
+            <use href="#i-shirt"></use>
+          </svg> Roupa</span>
+        <span class="search-tag" onclick="setSearch('supermercado')"><svg class="icon icon-xs">
+            <use href="#i-shopping-cart"></use>
+          </svg> Supermercado</span>
+        <span class="search-tag" onclick="setSearch('gás')"><svg class="icon icon-xs">
+            <use href="#i-flame"></use>
+          </svg> Gás</span>
+      </div>
+    </section>
+
+    <!-- RESULTADOS DA BUSCA -->
+    <div id="search-results">
+      <div class="results-header" id="results-header">Resultados para: <span id="search-term"></span></div>
+      <div class="listings-grid" id="results-grid"></div>
+      <div id="no-results">
+        <h3><svg class="icon icon-lg">
+            <use href="#i-search"></use>
+          </svg></h3>
+        <p>Nenhum comércio encontrado para "<strong id="no-results-term"></strong>"</p>
+        <p style="margin-top:8px; font-size:13px;">Tente outros termos como pizza, farmácia, mecânico...</p>
+      </div>
+    </div>
+
+    <!-- CATEGORIAS -->
+    <section class="categories">
+      <p class="section-title">Categorias</p>
+      <div class="cat-grid">
+        <div class="cat-chip active" onclick="filtrarCategoria('todos', this)"><svg class="icon icon-sm">
+            <use href="#i-shopping-cart"></use>
+          </svg> Todos</div>
+        <div class="cat-chip" onclick="filtrarCategoria('restaurante', this)"><svg class="icon icon-sm">
+            <use href="#i-shopping-cart"></use>
+          </svg> Restaurantes</div>
+        <div class="cat-chip" onclick="filtrarCategoria('farmácia', this)"><svg class="icon icon-sm">
+            <use href="#i-pill"></use>
+          </svg> Farmácias</div>
+        <div class="cat-chip" onclick="filtrarCategoria('pet', this)"><svg class="icon icon-sm">
+            <use href="#i-paw"></use>
+          </svg> Pet Shops</div>
+        <div class="cat-chip" onclick="filtrarCategoria('mecânica', this)"><svg class="icon icon-sm">
+            <use href="#i-wrench"></use>
+          </svg> Mecânicas</div>
+        <div class="cat-chip" onclick="filtrarCategoria('roupa', this)"><svg class="icon icon-sm">
+            <use href="#i-shirt"></use>
+          </svg> Moda</div>
+        <div class="cat-chip" onclick="filtrarCategoria('supermercado', this)"><svg class="icon icon-sm">
+            <use href="#i-shopping-cart"></use>
+          </svg> Mercados</div>
+        <div class="cat-chip" onclick="filtrarCategoria('barbearia', this)"><svg class="icon icon-sm">
+            <use href="#i-scissors"></use>
+          </svg> Barbearias</div>
+        <div class="cat-chip" onclick="filtrarCategoria('salão', this)"><svg class="icon icon-sm">
+            <use href="#i-scissors"></use>
+          </svg> Beleza</div>
+        <div class="cat-chip" onclick="filtrarCategoria('padaria', this)"><svg class="icon icon-sm">
+            <use href="#i-bread"></use>
+          </svg> Padarias</div>
+        <div class="cat-chip" onclick="filtrarCategoria('material', this)"><svg class="icon icon-sm">
+            <use href="#i-hammer"></use>
+          </svg> Material</div>
+        <div class="cat-chip" onclick="filtrarCategoria('gás', this)"><svg class="icon icon-sm">
+            <use href="#i-flame"></use>
+          </svg> Gás</div>
+      </div>
+    </section>
+
+    <!-- PROMOÇÕES -->
+    <section class="promos-section" id="promos">
+      <div class="promos-inner">
+        <div class="promos-header">
+          <h2 class="promos-title"><svg class="icon icon-md">
+              <use href="#i-flame"></use>
+            </svg> Promoções <span>do Dia</span></h2>
+          <a href="#" class="ver-todas">Ver todas →</a>
+        </div>
+        <div class="promos-grid" id="promos-grid"></div>
+      </div>
+    </section>
+
+    <!-- LISTINGS PRINCIPAIS -->
+    <section class="listings-section">
+      <div class="listings-header">
+        <h2 class="listings-title" id="listings-title"><svg class="icon icon-md">
+            <use href="#i-shopping-cart"></use>
+          </svg> Todos os Comércios</h2>
+        <select class="sort-select" onchange="ordenar(this.value)">
+          <option value="rating">⭐ Melhor avaliados</option>
+          <option value="nome">🔤 A-Z</option>
+          <option value="visitas">👁️ Mais visitados</option>
+        </select>
+      </div>
+      <div class="listings-grid" id="main-grid"></div>
+      <div class="pagination" id="pagination"></div>
+    </section>
+
+    <!-- FAVORITOS -->
+    <section class="favorites-section" id="favoritos" style="display:none;">
+      <div class="favorites-inner">
+        <div class="favorites-header">
+          <h2 class="favorites-title"><svg class="icon icon-md">
+              <use href="#i-heart"></use>
+            </svg> Meus Favoritos <span id="favoritos-count"></span></h2>
+          <button class="favorites-back" onclick="fecharFavoritos()">← Todos os Comércios</button>
+        </div>
+        <div class="listings-grid" id="favoritos-grid"></div>
+        <div class="favorites-empty" id="favoritos-empty" style="display:none;">
+          <p style="font-size:48px;margin-bottom:16px;">♡</p>
+          <p><strong>Nenhum favorito ainda</strong></p>
+          <p style="font-size:13px;color:#aaa;margin-top:8px;">Clique no coração para adicionar lojas aos seus favoritos
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RANKING -->
+    <section class="ranking-section" id="ranking">
+      <div class="ranking-inner">
+        <h2 class="ranking-title"><svg class="icon icon-md">
+            <use href="#i-trophy"></use>
+          </svg> Ranking dos Comércios</h2>
+        <div class="ranking-tabs">
+          <button class="ranking-tab active" onclick="mostrarRanking('rating', this)"><svg class="icon icon-sm">
+              <use href="#i-star"></use>
+            </svg> Mais Bem Avaliados</button>
+          <button class="ranking-tab" onclick="mostrarRanking('visitas', this)"><svg class="icon icon-sm">
+              <use href="#i-eye"></use>
+            </svg> Mais Visitados</button>
+          <button class="ranking-tab" onclick="mostrarRanking('recomendados', this)"><svg class="icon icon-sm">
+              <use href="#i-heart"></use>
+            </svg> Mais Recomendados</button>
+        </div>
+        <div class="ranking-list" id="ranking-list"></div>
+      </div>
+    </section>
+
+    <!-- MAPA -->
+    <section class="map-section" id="mapa">
+      <h2 class="map-title"><svg class="icon icon-md">
+          <use href="#i-map"></use>
+        </svg> Mapa do Comércio</h2>
+      <p class="map-sub">Encontre os comércios no mapa da cidade</p>
+      <div class="map-container">
+        <div id="leaflet-map"></div>
+        <div class="map-legend">
+          <div class="map-legend-item">
+            <div class="map-dot" style="background:#10B981"></div> Aberto agora
+          </div>
+          <div class="map-legend-item">
+            <div class="map-dot" style="background:#EA580C"></div> Promoção ativa
+          </div>
+          <div class="map-legend-item">
+            <div class="map-dot" style="background:#aaa"></div> Fechado
+          </div>
+        </div>
+      </div>
+      <p style="margin-top:14px; font-size:13px; color:#aaa; text-align:center;">
+        💡 Dica: Para adicionar sua loja no mapa, <a href="#" onclick="abrirCadastroLoja()"
+          style="color:var(--verde)">cadastre-se gratuitamente</a>
+      </p>
+    </section>
+
+    <!-- ROADMAP PUBLICO -->
+    <section class="public-roadmap" id="roadmap">
+      <div class="roadmap-inner">
+        <div class="roadmap-heading">
+          <p class="section-title">Construindo em público</p>
+          <h2>O caminho do Comércio BES até o lançamento</h2>
+          <p>Estamos começando simples: primeiro um guia confiável para encontrar lojas, depois pedidos mais completos, pagamentos e ferramentas para os próprios comerciantes cuidarem das páginas.</p>
+        </div>
+
+        <div class="roadmap-grid">
+          <article class="roadmap-card roadmap-card-live">
+            <span class="roadmap-status">Agora</span>
+            <h3>Guia comercial</h3>
+            <ul>
+              <li>Busca por comércios, categorias e mapa</li>
+              <li>Páginas de lojas com fotos, horário e WhatsApp</li>
+              <li>Favoritos, ranking e promoções simples</li>
+              <li>Pedido leve direcionado ao WhatsApp</li>
+            </ul>
+          </article>
+
+          <article class="roadmap-card">
+            <span class="roadmap-status">Antes de abrir</span>
+            <h3>Homologação privada</h3>
+            <ul>
+              <li>Site protegido por senha para testes</li>
+              <li>CRUD básico de lojas, produtos e promoções</li>
+              <li>Minha Conta para cliente, lojista e admin</li>
+              <li>Deploy contínuo a partir do GitHub</li>
+            </ul>
+          </article>
+
+          <article class="roadmap-card">
+            <span class="roadmap-status">Depois do básico</span>
+            <h3>Marketplace gradual</h3>
+            <ul>
+              <li>Pedidos salvos no backend</li>
+              <li>Histórico do cliente e painel do lojista</li>
+              <li>PIX Mercado Pago testado em sandbox</li>
+              <li>Segurança reforçada e auditoria final</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="roadmap-note">
+          <strong>Iniciativa gratuita para o comércio local.</strong>
+          <span>O primeiro objetivo é colocar Boa Esperança do Sul em um guia único, fácil de usar e mantido com cuidado.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="cadastro">
+      <div class="footer-inner">
+        <div class="footer-top">
+          <div>
+            <div class="footer-brand">Comércio<span>BES</span></div>
+            <p class="footer-desc">O guia comercial completo de Boa Esperança do Sul. Conectando moradores ao comércio
+              local desde 2024.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Navegação</h4>
+            <a href="#busca"><svg class="icon icon-sm">
+                <use href="#i-search"></use>
+              </svg> Buscar</a>
+            <a href="#promos"><svg class="icon icon-sm">
+                <use href="#i-flame"></use>
+              </svg> Promoções</a>
+            <a href="#ranking"><svg class="icon icon-sm">
+                <use href="#i-star"></use>
+              </svg> Ranking</a>
+            <a href="#mapa"><svg class="icon icon-sm">
+                <use href="#i-map"></use>
+              </svg> Mapa</a>
+            <a href="#roadmap"><svg class="icon icon-sm">
+                <use href="#i-info"></use>
+              </svg> Roadmap</a>
+          </div>
+          <div class="footer-col">
+            <h4>Comerciante?</h4>
+            <a href="#" onclick="abrirCadastroLoja()"><svg class="icon icon-sm">
+                <use href="#i-plus"></use>
+              </svg> Cadastrar loja</a>
+            <a href="#"><svg class="icon icon-sm">
+                <use href="#i-megaphone"></use>
+              </svg> Anunciar promoção</a>
+            <a href="#"><svg class="icon icon-sm">
+                <use href="#i-phone"></use>
+              </svg> Contato</a>
+            <a href="#"><svg class="icon icon-sm">
+                <use href="#i-info"></use>
+              </svg> Sobre</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© <span id="current-year">2024</span> ComércioBES · Boa Esperança do Sul — SP</span>
+          <span><svg class="icon icon-sm">
+              <use href="#i-heart"></use>
+            </svg> Feito para a cidade</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ===== MODAL PERFIL DA LOJA ===== -->
+  <div class="modal-overlay" id="modal-overlay" onclick="fecharModal(event)">
+    <div class="modal" id="modal">
+      <div class="modal-img" id="modal-img">
+        <button class="modal-close" onclick="fecharModal()">✕</button>
+        <button class="modal-fav" id="modal-fav" onclick="toggleFavoritoModal()">♡</button>
+        <span id="modal-emoji"></span>
+      </div>
+      <div class="modal-body">
+        <div class="modal-cat" id="modal-cat"></div>
+        <div class="modal-name" id="modal-name"></div>
+
+        <div class="modal-info" id="modal-info"></div>
+
+        <hr class="modal-divider">
+
+        <div class="modal-stars-big" id="modal-stars-big"></div>
+
+        <div class="foto-galeria" id="modal-fotos"></div>
+
+        <!-- MAPA EMBED -->
+        <div id="modal-mapa"></div>
+
+        <!-- CATÁLOGO / CARRINHO -->
+        <div id="modal-catalogo"></div>
+
+        <hr class="modal-divider">
+
+        <p style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;margin-bottom:12px;">Avaliar
+          este comércio</p>
+        <div class="review-stars" id="review-stars">
+          <span class="review-star" data-val="1" onclick="avaliar(1)">★</span>
+          <span class="review-star" data-val="2" onclick="avaliar(2)">★</span>
+          <span class="review-star" data-val="3" onclick="avaliar(3)">★</span>
+          <span class="review-star" data-val="4" onclick="avaliar(4)">★</span>
+          <span class="review-star" data-val="5" onclick="avaliar(5)">★</span>
+        </div>
+        <textarea class="review-input" placeholder="Deixe um comentário (opcional)..."></textarea>
+        <button class="btn-avaliar" onclick="enviarAvaliacao()">Enviar avaliação</button>
+
+        <hr class="modal-divider">
+
+        <div class="modal-actions" id="modal-actions"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAB CADASTRO -->
+  <button class="fab" id="fab-btn" onclick="abrirCadastroLoja()">
+    <svg class="icon icon-sm">
+      <use href="#i-plus"></use>
+    </svg> Cadastrar minha loja
+  </button>
+
+  <!-- ===== CART DRAWER ===== -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="fecharCarrinhoDrawer()"></div>
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="drawer-header">
+      <h3><svg class="icon icon-md">
+          <use href="#i-bag"></use>
+        </svg> Meu Carrinho</h3>
+      <button class="drawer-close" onclick="fecharCarrinhoDrawer()">✕</button>
+    </div>
+    <div class="drawer-body" id="drawer-body"></div>
+    <div class="drawer-footer" id="drawer-footer">
+      <div class="drawer-total" id="drawer-total"></div>
+      <button class="btn-checkout" onclick="abrirCheckout()"><svg class="icon icon-sm">
+          <use href="#i-bag"></use>
+        </svg> Finalizar Pedido</button>
+      <button class="btn-checkout-whats" onclick="enviarTudoWhatsApp()"><svg class="icon icon-sm">
+          <use href="#i-message"></use>
+        </svg> Enviar via WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- ===== MERCHANT REGISTRATION MODAL ===== -->
+  <div class="merchant-overlay" id="merchant-overlay" onclick="fecharCadastroLoja(event)">
+    <div class="merchant-modal" onclick="event.stopPropagation()">
+      <button class="merchant-close" onclick="fecharCadastroLoja()">✕</button>
+      <h2>➕ Cadastrar Minha Loja</h2>
+      <p class="merchant-sub">Preencha os dados para aparecer no Comércio BES</p>
+      <form class="merchant-form" id="merchant-form" onsubmit="return salvarCadastroLoja(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nome do estabelecimento *</label>
+            <input type="text" id="loja-nome" placeholder="Ex: Pizzaria Bella Massa" required>
+          </div>
+          <div class="form-group">
+            <label>Categoria *</label>
+            <select id="loja-categoria" required>
+              <option value="">Selecione...</option>
+              <option value="restaurante">🍽️ Restaurante</option>
+              <option value="farmácia">💊 Farmácia</option>
+              <option value="pet">🐾 Pet Shop</option>
+              <option value="mecânica">🔧 Mecânica</option>
+              <option value="barbearia">💈 Barbearia</option>
+              <option value="roupa">👗 Moda</option>
+              <option value="supermercado">🛒 Supermercado</option>
+              <option value="salão">💅 Beleza</option>
+              <option value="padaria">🍞 Padaria</option>
+              <option value="gás">🔥 Gás</option>
+              <option value="material">🏗️ Material</option>
+              <option value="outro">📦 Outro</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Endereço *</label>
+          <input type="text" id="loja-endereco" placeholder="Rua, número" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Telefone *</label>
+            <input type="tel" id="loja-tel" placeholder="(16) 99999-9999" required>
+          </div>
+          <div class="form-group">
+            <label>WhatsApp *</label>
+            <input type="tel" id="loja-whatsapp" placeholder="5516999999999" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Horário de funcionamento</label>
+          <input type="text" id="loja-horario" placeholder="Ex: Seg-Sex · 8h às 18h">
+        </div>
+        <div class="form-group">
+          <label>Emoji representativo</label>
+          <input type="text" id="loja-emoji" placeholder="🍕" maxlength="4">
+        </div>
+        <button type="submit" class="auth-btn">Cadastrar Loja</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== CHECKOUT MODAL ===== -->
+  <div class="checkout-overlay" id="checkout-overlay" onclick="fecharCheckout(event)">
+    <div class="checkout-modal" onclick="event.stopPropagation()">
+      <button class="checkout-close" onclick="fecharCheckout()">✕</button>
+      <h2>🛒 Finalizar Pedido</h2>
+      <div id="checkout-items"></div>
+      <hr class="modal-divider">
+      <form id="checkout-form" onsubmit="return confirmarPedido(event)">
+        <div class="form-group">
+          <label>Nome *</label>
+          <input type="text" id="checkout-nome" placeholder="Seu nome" required>
+        </div>
+        <div class="form-group">
+          <label>Telefone *</label>
+          <input type="tel" id="checkout-tel" placeholder="(16) 99999-9999" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Rua *</label>
+            <input type="text" id="checkout-rua" placeholder="Rua das Flores" required>
+          </div>
+          <div class="form-group" style="max-width:120px">
+            <label>Número *</label>
+            <input type="text" id="checkout-numero" placeholder="123" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Bairro *</label>
+            <input type="text" id="checkout-bairro" placeholder="Centro" required>
+          </div>
+          <div class="form-group">
+            <label>Complemento</label>
+            <input type="text" id="checkout-complemento" placeholder="Apto 2, Bloco B...">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Referência</label>
+          <input type="text" id="checkout-referencia" placeholder="Próximo ao mercado...">
+        </div>
+        <div class="form-group">
+          <label>Forma de pagamento</label>
+          <select id="checkout-pagamento">
+            <option value="pix">PIX</option>
+            <option value="dinheiro">Dinheiro na entrega</option>
+            <option value="cartao">Cartão na entrega</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Observações</label>
+          <textarea id="checkout-obs" placeholder="Troco, informações adicionais..."></textarea>
+        </div>
+        <div class="checkout-total" id="checkout-total"></div>
+        <div class="checkout-actions">
+          <button type="submit" class="btn-confirmar-pedido">✅ Confirmar Pedido</button>
+          <button type="button" class="btn-confirmar-whats" onclick="confirmarPedidoWhatsApp()">💬 Confirmar e Enviar
+            via WhatsApp</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== ORDERS MODAL ===== -->
+  <div class="orders-overlay" id="orders-overlay" onclick="fecharPedidos(event)">
+    <div class="orders-modal" onclick="event.stopPropagation()">
+      <button class="orders-close" onclick="fecharPedidos()">✕</button>
+      <h2>📋 Meus Pedidos</h2>
+      <div id="orders-list"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- PWA INSTALL BANNER -->
+  <div class="pwa-install-banner" id="pwa-install-banner" style="display:none;">
+    <div class="pwa-install-inner">
+      <span>📲 Instale o <strong>ComércioBES</strong> no seu celular!</span>
+      <div class="pwa-install-actions">
+        <button class="pwa-install-btn" onclick="instalarPWA()">Instalar</button>
+        <button class="pwa-dismiss-btn" onclick="fecharBannerPWA()">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+  <script>
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('SW registrado:', reg.scope))
+          .catch(err => console.error('SW falha:', err));
+      });
+    }
+
+    // ===== AUTH STATE =====
+    function verificarLogin() {
+      const loginBtn = document.getElementById('nav-login');
+      const userBtns = document.getElementById('nav-user-btns');
+      const fabBtn = document.getElementById('fab-btn');
+      const usernameEl = document.getElementById('conta-username');
+
+      if (Auth.isLoggedIn()) {
+        const user = Auth.getUser();
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (userBtns) userBtns.style.display = 'flex';
+        if (fabBtn) fabBtn.style.display = 'none';
+        if (usernameEl) usernameEl.textContent = user ? user.nome.split(' ')[0] : 'Usuário';
+      } else {
+        if (loginBtn) loginBtn.style.display = 'block';
+        if (userBtns) userBtns.style.display = 'none';
+        if (fabBtn) fabBtn.style.display = 'flex';
+      }
+    }
+
+    // Override para redirecionar ao login em vez de abrir modal
+    function abrirAuth() {
+      window.location.href = 'html/login.html';
+    }
+
+    // Override do fazerLogout para funcionar com a nova navbar
+    function fazerLogout() {
+      Auth.logout();
+      const dropdown = document.getElementById('conta-dropdown');
+      if (dropdown) dropdown.classList.remove('open');
+      verificarLogin();
+      mostrarToast('👋 Você saiu da sua conta.');
+    }
+
+    function toggleContaMenu() {
+      document.getElementById('conta-dropdown').classList.toggle('open');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      verificarLogin();
+      if (localStorage.getItem('bes_cart_pending') === '1' && Auth.isLoggedIn()) {
+        localStorage.removeItem('bes_cart_pending');
+        const user = Auth.getUser();
+        const nome = user ? ' ' + user.nome.split(' ')[0] : '';
+        setTimeout(() => mostrarToast('Bem-vindo(a)' + nome + '! Agora você pode adicionar itens ao carrinho.'), 600);
+      }
+    });
+  </script>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox-overlay" id="lightbox-overlay" onclick="fecharLightbox()">
+    <button class="lightbox-close" onclick="fecharLightbox()">✕</button>
+    <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation();navLightbox(-1)">‹</button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="Foto da loja">
+    <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation();navLightbox(1)">›</button>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
+
+</body>
+
+</html>

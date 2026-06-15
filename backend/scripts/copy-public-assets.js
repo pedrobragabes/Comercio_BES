@@ -9,8 +9,13 @@ const files = ['index.html', 'manifest.json', 'sw.js'];
 const directories = ['css', 'js', 'html', 'icons', 'images', 'data'];
 
 if (!fs.existsSync(path.join(projectRoot, 'index.html'))) {
-  console.error(`Frontend index.html not found at ${projectRoot}`);
-  console.error('Deploy the repository root, not only the backend directory.');
+  if (fs.existsSync(path.join(publicRoot, 'index.html'))) {
+    console.log(`Repository root frontend not found at ${projectRoot}. Using bundled assets from ${publicRoot}.`);
+    process.exit(0);
+  }
+
+  console.error(`Frontend index.html not found at ${projectRoot} or ${publicRoot}`);
+  console.error('Deploy the repository root or commit bundled frontend assets under backend/public.');
   process.exit(1);
 }
 

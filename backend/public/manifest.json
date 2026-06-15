@@ -1,0 +1,27 @@
+{
+  "name": "Comércio BES — Boa Esperança do Sul",
+  "short_name": "ComércioBES",
+  "description": "Guia comercial completo de Boa Esperança do Sul. Restaurantes, farmácias, mecânicas e muito mais.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFF8F0",
+  "theme_color": "#00C853",
+  "orientation": "portrait-primary",
+  "lang": "pt-BR",
+  "categories": ["business", "shopping", "food"],
+  "icons": [
+    {
+      "src": "icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,603 @@
+{
+  "comercios": [
+    {
+      "id": 1,
+      "slug": "pizzaria-bella-massa",
+      "nome": "Pizzaria Bella Massa",
+      "categoria": "restaurante",
+      "tags": [
+        "pizza",
+        "restaurante",
+        "delivery",
+        "comida"
+      ],
+      "emoji": "🍕",
+      "rating": 4.8,
+      "visitas": 1240,
+      "recomendados": 98,
+      "aberto": true,
+      "endereco": "Rua XV de Novembro, 45",
+      "lat": -21.9925,
+      "lng": -48.3908,
+      "tel": "16991112222",
+      "whatsapp": "5516991112222",
+      "horario": "Ter-Dom · 18h às 23h",
+      "fotos": [
+        "🍕",
+        "🍝",
+        "🥗"
+      ],
+      "promo": {
+        "ativo": true,
+        "desc": "Pizza Grande + 2 Refrigerantes",
+        "preco": "R$52",
+        "original": "R$72"
+      },
+      "catalogo": [
+        {
+          "nome_produto": "Pizza Grande Margherita",
+          "descricao": "Molho de tomate, mussarela, manjericão fresco e azeite",
+          "preco": 42.0
+        },
+        {
+          "nome_produto": "Pizza Grande Calabresa",
+          "descricao": "Calabresa fatiada, cebola e mussarela",
+          "preco": 45.0
+        },
+        {
+          "nome_produto": "Pizza Grande Frango c/ Catupiry",
+          "descricao": "Frango desfiado temperado com catupiry cremoso",
+          "preco": 48.0
+        },
+        {
+          "nome_produto": "Pizza Grande Portuguesa",
+          "descricao": "Presunto, ovo, cebola, azeitona e mussarela",
+          "preco": 50.0
+        },
+        {
+          "nome_produto": "Refrigerante 2L",
+          "descricao": "Coca-Cola, Guaraná ou Fanta",
+          "preco": 12.0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "slug": "pizzaria-central",
+      "nome": "Pizzaria Central",
+      "categoria": "restaurante",
+      "tags": [
+        "pizza",
+        "restaurante",
+        "delivery"
+      ],
+      "emoji": "🍕",
+      "rating": 4.5,
+      "visitas": 980,
+      "recomendados": 85,
+      "aberto": true,
+      "endereco": "Av. Saudade, 210",
+      "lat": -21.994,
+      "lng": -48.3885,
+      "tel": "16993334444",
+      "whatsapp": "5516993334444",
+      "horario": "Qua-Dom · 18h às 22h30",
+      "fotos": [
+        "🍕",
+        "🥤",
+        "🧀"
+      ],
+      "promo": null,
+      "catalogo": null
+    },
+    {
+      "id": 3,
+      "slug": "farmacia-boa-esperanca",
+      "nome": "Farmácia Boa Esperança",
+      "categoria": "farmácia",
+      "tags": [
+        "farmácia",
+        "remédio",
+        "medicamento",
+        "saúde"
+      ],
+      "emoji": "💊",
+      "rating": 4.9,
+      "visitas": 2100,
+      "recomendados": 195,
+      "aberto": true,
+      "endereco": "Praça Cel. Marcondes, 8",
+      "lat": -21.9932,
+      "lng": -48.392,
+      "tel": "16994445555",
+      "whatsapp": "5516994445555",
+      "horario": "Seg-Sab · 7h às 20h · Dom 8h às 13h",
+      "fotos": [
+        "💊",
+        "🩺",
+        "🧴"
+      ],
+      "promo": null,
+      "catalogo": null
+    },
+    {
+      "id": 4,
+      "slug": "farmacia-popular-bes",
+      "nome": "Farmácia Popular BES",
+      "categoria": "farmácia",
+      "tags": [
+        "farmácia",
+        "remédio",
+        "genérico",
+        "saúde"
+      ],
+      "emoji": "💉",
+      "rating": 4.6,
+      "visitas": 1650,
+      "recomendados": 140,
+      "aberto": false,
+      "endereco": "Rua Floriano Peixoto, 77",
+      "lat": -21.9918,
+      "lng": -48.3932,
+      "tel": "16996667777",
+      "whatsapp": "5516996667777",
+      "horario": "Seg-Sex · 8h às 19h · Sab 8h às 14h",
+      "fotos": [
+        "💉",
+        "💊",
+        "🏥"
+      ],
+      "promo": null,
+      "catalogo": null
+    },
+    {
+      "id": 5,
+      "slug": "pet-shop-mundo-animal",
+      "nome": "Pet Shop Mundo Animal",
+      "categoria": "pet",
+      "tags": [
+        "pet",
+        "cachorro",
+        "gato",
+        "ração",
+        "banho",
+        "tosa",
+        "veterinário"
+      ],
+      "emoji": "🐾",
+      "rating": 4.9,
+      "visitas": 1890,
+      "recomendados": 178,
+      "aberto": true,
+      "endereco": "Rua das Flores, 120",
+      "lat": -21.9945,
+      "lng": -48.3898,
+      "tel": "16997778888",
+      "whatsapp": "5516997778888",
+      "horario": "Seg-Sab · 8h às 18h",
+      "fotos": [
+        "🐾",
+        "🐕",
+        "🐈"
+      ],
+      "promo": {
+        "ativo": true,
+        "desc": "Banho e Tosa com 20% de desconto",
+        "preco": "R$40",
+        "original": "R$50"
+      },
+      "catalogo": null
+    },
+    {
+      "id": 6,
+      "slug": "mecanica-do-ze",
+      "nome": "Mecânica do Zé",
+      "categoria": "mecânica",
+      "tags": [
+        "mecânico",
+        "carro",
+        "conserto",
+        "auto",
+        "mecânica",
+        "revisão"
+      ],
+      "emoji": "🔧",
+      "rating": 4.7,
+      "visitas": 780,
+      "recomendados": 92,
+      "aberto": true,
+      "endereco": "Rod. SP-255, km 3",
+      "lat": -21.988,
+      "lng": -48.395,
+      "tel": "16998889999",
+      "whatsapp": "5516998889999",
+      "horario": "Seg-Sex · 7h às 18h · Sab 7h às 12h",
+      "fotos": [
+        "🔧",
+        "🚗",
+        "⚙️"
+      ],
+      "promo": null,
+      "catalogo": null
+    },
+    {
+      "id": 7,
+      "slug": "barbearia-estilo",
+      "nome": "Barbearia Estilo",
+      "categoria": "barbearia",
+      "tags": [
+        "barbearia",
+        "cabelo",
+        "barba",
+        "corte"
+      ],
+      "emoji": "💈",
+      "rating": 4.8,
+      "visitas": 1100,
+      "recomendados": 115,
+      "aberto": true,
+      "endereco": "Rua Tiradentes, 33",
+      "lat": -21.9935,
+      "lng": -48.3915,
+      "tel": "16992223333",
+      "whatsapp": "5516992223333",
+      "horario": "Ter-Sab · 8h às 19h",
+      "fotos": [
+        "💈",
+        "✂️",
+        "🪒"
+      ],
+      "promo": {
+        "ativo": true,
+        "desc": "Corte + Barba",
+        "preco": "R$25",
+        "original": "R$35"
+      },
+      "catalogo": null
+    },
+    {
+      "id": 8,
+      "slug": "barbearia-do-marcos",
+      "nome": "Barbearia do Marcos",
+      "categoria": "barbearia",
+      "tags": [
+        "barbearia",
+        "cabelo",
+        "barba",
+        "corte"
+      ],
+      "emoji": "✂️",
+      "rating": 4.5,
+      "visitas": 720,
+      "recomendados": 68,
+      "aberto": false,
+      "endereco": "Av. Brasil, 55",
+      "lat": -21.995,
+      "lng": -48.387,
+      "tel": "16993332211",
+      "whatsapp": "5516993332211",
+      "horario": "Seg-Sab · 8h às 18h",
+      "fotos": [
+        "✂️",
+        "💈",
+        "🪒"
+      ],
+      "promo": null,
+      "catalogo": null
+    },
+    {
+      "id": 9,
+      "slug": "supermercado-central",
+      "nome": "Supermercado Central",
+      "categoria": "supermercado",
+      "tags": [
+        "supermercado",
+        "mercado",
+        "feira",
+        "compras",
+        "alimento"
+      ],
+      "emoji": "🛒",
+      "rating": 4.4,
+      "visitas": 3200,
+      "recomendados": 210,
+      "aberto": true,
+      "endereco": "Praça da República, 1",
+      "lat": -21.9928,
+      "lng": -48.3905,
+      "tel": "16994441234",
+      "whatsapp": "5516994441234",
+      "horario": "Seg-Sab · 7h às 21h · Dom 7h às 14h",
+      "fotos": [
+        "🛒",
+        "🥩",
+        "🥦"
+      ],
+      "promo": null,
+      "catalogo": null
+    },
+    {
+      "id": 10,
+      "slug": "loja-moda-e-estilo",
+      "nome": "Loja Moda & Estilo",
+      "categoria": "roupa",
+      "tags": [
+        "roupa",
+        "roupas",
+        "moda",
+        "vestuário",
+        "blusa",
+        "calça"
+      ],
+      "emoji": "👗",
+      "rating": 4.6,
+      "visitas": 640,
+      "recomendados": 72,
+      "aberto": true,
+      "endereco": "Rua XV de Novembro, 102",
+      "lat": -21.9922,
+      "lng": -48.3912,
+      "tel": "16991234567",
+      "whatsapp": "5516991234567",
+      "horario": "Seg-Sex · 9h às 18h · Sab 9h às 15h",
+      "fotos": [
+        "👗",
+        "👕",
+        "👠"
+      ],
+      "promo": {
+        "ativo": true,
+        "desc": "50% OFF em toda linha inverno",
+        "preco": "a partir de R$29",
+        "original": "R$59"
+      },
+      "catalogo": null
+    },
+    {
+      "id": 11,
+      "slug": "hamburgueria-central",
+      "nome": "Hamburgueria Central",
+      "categoria": "restaurante",
+      "tags": [
+        "hamburguer",
+        "lanche",
+        "burger",
+        "restaurante",
+        "delivery"
+      ],
+      "emoji": "🍔",
+      "rating": 4.7,
+      "visitas": 1560,
+      "recomendados": 145,
+      "aberto": true,
+      "endereco": "Av. Saudade, 85",
+      "lat": -21.9938,
+      "lng": -48.389,
+      "tel": "16997654321",
+      "whatsapp": "5516997654321",
+      "horario": "Seg-Dom · 11h às 23h",
+      "fotos": [
+        "🍔",
+        "🍟",
+        "🥤"
+      ],
+      "promo": {
+        "ativo": true,
+        "desc": "X-Burger + Batata Frita",
+        "preco": "R$18",
+        "original": "R$28"
+      },
+      "catalogo": [
+        {
+          "nome_produto": "X-Burger Clássico",
+          "descricao": "Pão brioche, hambúrguer 150g, queijo, alface, tomate e molho especial",
+          "preco": 22.0
+        },
+        {
+          "nome_produto": "X-Bacon Duplo",
+          "descricao": "Pão brioche, 2 hambúrgueres 120g, bacon crocante, queijo cheddar e molho BBQ",
+          "preco": 32.0
+        },
+        {
+          "nome_produto": "X-Frango Crispy",
+          "descricao": "Pão australiano, frango empanado crocante, queijo, alface e maionese temperada",
+          "preco": 26.0
+        },
+        {
+          "nome_produto": "Batata Frita Grande",
+          "descricao": "Porção de batata frita crocante com cheddar e bacon",
+          "preco": 18.0
+        },
+        {
+          "nome_produto": "Milk Shake 500ml",
+          "descricao": "Chocolate, morango ou ovomaltine",
+          "preco": 16.0
+        },
+        {
+          "nome_produto": "Refrigerante Lata",
+          "descricao": "Coca-Cola, Guaraná, Fanta ou Sprite",
+          "preco": 7.0
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "slug": "salao-beleza-total",
+      "nome": "Salão Beleza Total",
+      "categoria": "salão",
+      "tags": [
+        "salão",
+        "cabelo",
+        "manicure",
+        "pedicure",
+        "beleza",
+        "corte"
+      ],
+      "emoji": "💅",
+      "rating": 4.9,
+      "visitas": 920,
+      "recomendados": 130,
+      "aberto": true,
+      "endereco": "Rua das Palmeiras, 14",
+      "lat": -21.9915,
+      "lng": -48.3925,
+      "tel": "16993219876",
+      "whatsapp": "5516993219876",
+      "horario": "Ter-Sab · 8h30 às 18h",
+      "fotos": [
+        "💅",
+        "💆",
+        "✨"
+      ],
+      "promo": null,
+      "catalogo": null
+    },
+    {
+      "id": 13,
+      "slug": "padaria-pao-quente",
+      "nome": "Padaria Pão Quente",
+      "categoria": "padaria",
+      "tags": [
+        "padaria",
+        "pão",
+        "café",
+        "salgado",
+        "lanche",
+        "bolo"
+      ],
+      "emoji": "🍞",
+      "rating": 4.8,
+      "visitas": 1780,
+      "recomendados": 188,
+      "aberto": true,
+      "endereco": "Rua Sete de Setembro, 23",
+      "lat": -21.9942,
+      "lng": -48.3918,
+      "tel": "16992341234",
+      "whatsapp": "5516992341234",
+      "horario": "Seg-Dom · 5h30 às 12h",
+      "fotos": [
+        "🍞",
+        "☕",
+        "🥐"
+      ],
+      "promo": null,
+      "catalogo": null
+    },
+    {
+      "id": 14,
+      "slug": "distribuidora-de-gas-bes",
+      "nome": "Distribuidora de Gás BES",
+      "categoria": "gás",
+      "tags": [
+        "gás",
+        "botijão",
+        "glp",
+        "entrega"
+      ],
+      "emoji": "🔥",
+      "rating": 4.5,
+      "visitas": 890,
+      "recomendados": 95,
+      "aberto": true,
+      "endereco": "Rua Independência, 67",
+      "lat": -21.9955,
+      "lng": -48.3875,
+      "tel": "16991122334",
+      "whatsapp": "5516991122334",
+      "horario": "Seg-Sab · 7h às 19h",
+      "fotos": [
+        "🔥",
+        "🏠",
+        "🚚"
+      ],
+      "promo": null,
+      "catalogo": null
+    },
+    {
+      "id": 15,
+      "slug": "material-de-construcao-bes",
+      "nome": "Material de Construção BES",
+      "categoria": "material",
+      "tags": [
+        "material",
+        "construção",
+        "tinta",
+        "cimento",
+        "ferragem",
+        "obra"
+      ],
+      "emoji": "🏗️",
+      "rating": 4.3,
+      "visitas": 560,
+      "recomendados": 62,
+      "aberto": true,
+      "endereco": "Av. João Paulo II, 300",
+      "lat": -21.996,
+      "lng": -48.394,
+      "tel": "16994433221",
+      "whatsapp": "5516994433221",
+      "horario": "Seg-Sex · 7h às 17h · Sab 7h às 12h",
+      "fotos": [
+        "🏗️",
+        "🪓",
+        "🔨"
+      ],
+      "promo": null,
+      "catalogo": null
+    },
+    {
+      "id": 16,
+      "slug": "aquaflora-groshop",
+      "nome": "AquaFlora AgroShop",
+      "categoria": "Pet",
+      "tags": ["pet", "rações", "agro", "campo", "pesca", "lazer", "plantas", "jardim", "aquário", "animais"],
+      "emoji": "🌿",
+      "rating": 4.8,
+      "visitas": 20,
+      "recomendados": 20,
+      "aberto": true,
+      "destaque": true,
+      "endereco": "R. Ten. Penha, 1076",
+      "lat": -21.998827015702744,
+      "lng": -48.39176912705583,
+      "tel": "16999611708",
+      "whatsapp": "5516999611708",
+      "horario": "Seg-Sex 7h30–18h30 · Qua até 19h30 · Sáb 7h30–16h · Dom fechado",
+      "fotos": [
+        "/images/lojas/aquaflora/fachada.jpg",
+        "/images/lojas/aquaflora/foto1.jpg",
+        "/images/lojas/aquaflora/foto2.jpg",
+        "/images/lojas/aquaflora/foto3.jpg"
+      ],
+      "promo": {
+        "ativo": true,
+        "desc": "Toda quarta: até 15% off em rações selecionadas",
+        "preco": "até -15%",
+        "original": ""
+      },
+      "catalogo": [
+        {
+          "nome_produto": "Special Dog Raça Pequena Ultralife Sênior 15Kg",
+          "descricao": "Ração premium para cães de raça pequena sênior",
+          "preco": 185.16
+        },
+        {
+          "nome_produto": "Special Dog Raça Pequena Ultralife Suíno Frango 3Kg",
+          "descricao": "Ração sabor suíno e frango para raças pequenas",
+          "preco": 61.75
+        },
+        {
+          "nome_produto": "Special Dog Raça Pequena Ultralife 10Kg",
+          "descricao": "Ração premium para cães de raça pequena",
+          "preco": 126.26
+        },
+        {
+          "nome_produto": "Special Dog Raça Pequena Carne 20Kg",
+          "descricao": "Ração sabor carne para raças pequenas — embalagem família",
+          "preco": 170.91
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Comércio BES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --verde: #10B981;
+      --verde-escuro: #047857;
+      --laranja: #EA580C;
+      --azul: #0D47A1;
+      --creme: #FAFAFA;
+      --escuro: #1E293B;
+      --cinza: #F8FAFC;
+      --texto: #334155;
+      --borda: #E2E8F0;
+      --erro: #FF4444;
+    }
+
+    body.dark-mode {
+      --creme: #0B1120;
+      --escuro: #F1F5F9;
+      --cinza: #1E293B;
+      --texto: #CBD5E1;
+      --borda: #334155;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--creme);
+      color: var(--texto);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      background: #0F0F0F;
+      color: #E5E5E5;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg::before {
+      content: '';
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+      top: -200px;
+      left: -200px;
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    .bg::after {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+      bottom: -200px;
+      right: -100px;
+      animation: pulse 6s ease-in-out infinite 3s;
+    }
+
+    body.dark-mode .bg::before {
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, transparent 70%);
+    }
+
+    body.dark-mode .bg::after {
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%);
+    }
+
+    .grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    body.dark-mode .grid {
+      background-image:
+        linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px);
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+
+      50% {
+        transform: scale(1.15);
+        opacity: 1;
+      }
+    }
+
+    .card {
+      position: relative;
+      z-index: 10;
+      background: var(--creme);
+      border: 1.5px solid var(--borda);
+      border-radius: 28px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.08);
+      animation: slideUp 0.6s ease both;
+      transition: all 0.3s;
+    }
+
+    body.dark-mode .card {
+      background: #141414;
+      border-color: #2f2f2f;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--escuro);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 36px;
+      transition: color 0.3s;
+    }
+
+    body.dark-mode .logo {
+      color: #FFFFFF;
+    }
+
+    .logo span {
+      color: var(--verde);
+    }
+
+    h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--texto);
+      transition: color 0.3s;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--texto);
+      opacity: 0.65;
+      margin-bottom: 36px;
+      transition: all 0.3s;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: var(--texto);
+      opacity: 0.7;
+      margin-bottom: 8px;
+      transition: all 0.3s;
+    }
+
+    input {
+      width: 100%;
+      background: var(--cinza);
+      border: 1.5px solid var(--borda);
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--texto);
+      outline: none;
+      transition: all 0.25s;
+    }
+
+    body.dark-mode input {
+      background: #171717;
+      border-color: #2f2f2f;
+      color: #f0f0f0;
+    }
+
+    input::placeholder {
+      color: var(--texto);
+      opacity: 0.35;
+    }
+
+    input:focus {
+      border-color: var(--verde);
+      background: rgba(16, 185, 129, 0.08);
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+    }
+
+    body.dark-mode input:focus {
+      background: rgba(16, 185, 129, 0.1);
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+    }
+
+    input.erro {
+      border-color: var(--erro);
+      background: rgba(255, 68, 68, 0.08);
+    }
+
+    body.dark-mode input.erro {
+      background: rgba(255, 68, 68, 0.12);
+    }
+
+    .erro-msg {
+      display: none;
+      font-size: 12px;
+      color: var(--erro);
+      margin-top: 6px;
+    }
+
+    .erro-msg.show {
+      display: block;
+    }
+
+    .btn-entrar {
+      width: 100%;
+      background: var(--verde-escuro);
+      color: #fff;
+      border: none;
+      padding: 16px;
+      border-radius: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-entrar::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(-100%);
+      transition: transform 0.3s;
+    }
+
+    .btn-entrar:hover::before {
+      transform: translateX(0);
+    }
+
+    .btn-entrar:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 32px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-entrar:active {
+      transform: scale(0.98);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 28px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--borda);
+    }
+
+    .divider span {
+      font-size: 12px;
+      color: var(--texto);
+      opacity: 0.5;
+      white-space: nowrap;
+    }
+
+    .btn-cadastro {
+      width: 100%;
+      background: transparent;
+      color: var(--texto);
+      opacity: 0.7;
+      border: 1.5px solid var(--borda);
+      padding: 15px;
+      border-radius: 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+    }
+
+    body.dark-mode .btn-cadastro {
+      color: #d0d0d0;
+      border-color: #2f2f2f;
+    }
+
+    .btn-cadastro span {
+      color: var(--verde);
+      font-weight: 700;
+    }
+
+    .btn-cadastro:hover {
+      border-color: var(--verde);
+      color: var(--texto);
+      opacity: 1;
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    body.dark-mode .btn-cadastro:hover {
+      background: rgba(16, 185, 129, 0.1);
+      color: #FFFFFF;
+    }
+
+    .back-link {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--texto);
+      opacity: 0.5;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .back-link:hover {
+      color: var(--verde);
+      opacity: 1;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 36px 28px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg"></div>
+  <div class="grid"></div>
+
+  <a href="../index.html" class="back-link">← Voltar ao site</a>
+
+  <div class="card">
+    <a href="../index.html" class="logo">Comércio<span>BES</span></a>
+
+    <h1>Bem-vindo de volta</h1>
+    <p class="subtitle">Entre na sua conta para continuar</p>
+
+    <div class="field">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" placeholder="seu@email.com" oninput="limparErro('email')">
+      <span class="erro-msg" id="email-erro">Preencha um e-mail válido.</span>
+    </div>
+
+    <div class="field">
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" placeholder="••••••••">
+      <span class="erro-msg" id="senha-erro">Preencha sua senha.</span>
+    </div>
+
+    <button id="btn-entrar" class="btn-entrar">Entrar →</button>
+
+    <div class="divider"><span>ou</span></div>
+
+    <a href="cadastro.html" class="btn-cadastro">Não tem uma conta? <span>Cadastre aqui!</span></a>
+  </div>
+
+  <script type="module">
+    import { Auth } from '../js/modules/auth.js';
+
+    async function entrar() {
+      try {
+        let ok = true;
+        const emailInput = document.getElementById('email');
+        const senhaInput = document.getElementById('senha');
+        const email = emailInput.value.trim();
+        const senha = senhaInput.value.trim();
+
+        if (!email || !email.includes('@')) {
+          mostrarErro('email', 'Preencha um e-mail válido.');
+          ok = false;
+        }
+
+        if (!senha) {
+          mostrarErro('senha', 'Preencha sua senha.');
+          ok = false;
+        }
+
+        if (!ok) return;
+
+        // Botão de loading visual
+        const btn = document.getElementById('btn-entrar');
+        const originText = btn.innerHTML;
+        btn.innerHTML = 'Conectando...';
+        btn.style.opacity = '0.7';
+
+        const res = await Auth.login(email, senha);
+
+        if (!res) {
+          mostrarErro('email', 'Falha interna geral no módulo de Auth. Tente novamente.');
+          btn.innerHTML = originText;
+          btn.style.opacity = '1';
+          return;
+        }
+
+        if (!res.ok) {
+          mostrarErro('email', res.msg || 'E-mail ou senha incorretos.');
+          btn.innerHTML = originText;
+          btn.style.opacity = '1';
+          return;
+        }
+
+        localStorage.setItem('skipWelcome', 'true');
+        // Usar setTimeout breve evita race conditions no redirectionamento visual
+        setTimeout(() => {
+          window.location.href = '/minha-conta';
+        }, 100);
+
+      } catch (err) {
+        mostrarErro('email', 'Exceção fatal no navegador: ' + err.message);
+      }
+    }
+
+    function mostrarErro(campo, msg) {
+      const elInput = document.getElementById(campo);
+      if (elInput) elInput.classList.add('erro');
+      const elText = document.getElementById(campo + '-erro');
+      if (elText) {
+        elText.textContent = msg;
+        elText.classList.add('show');
+      }
+    }
+
+    function limparErro(campo) {
+      const elInput = document.getElementById(campo);
+      if (elInput) elInput.classList.remove('erro');
+      const elText = document.getElementById(campo + '-erro');
+      if (elText) elText.classList.remove('show');
+    }
+
+    // Attach listeners modernamente via DOM ao inves de Window globals
+    document.addEventListener('DOMContentLoaded', () => {
+      const btnEntrar = document.getElementById('btn-entrar');
+      const emailInput = document.getElementById('email');
+      const senhaInput = document.getElementById('senha');
+
+      if (btnEntrar) btnEntrar.addEventListener('click', entrar);
+
+      if (senhaInput) {
+        senhaInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') entrar();
+        });
+        senhaInput.addEventListener('input', () => limparErro('senha'));
+      }
+
+      if (emailInput) {
+        emailInput.addEventListener('input', () => limparErro('email'));
+        emailInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') senhaInput.focus();
+        });
+      }
+
+      if (localStorage.getItem('bes_dark_mode') === '1') {
+        document.body.classList.add('dark-mode');
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('bes_dark_mode') === '1') {
+        document.body.classList.add('dark-mode');
+      }
+    });
+  </script>
+</body>
+
+</html>

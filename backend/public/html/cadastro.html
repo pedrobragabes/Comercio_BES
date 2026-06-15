@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro — Comércio BES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --verde: #10B981;
+      --verde-escuro: #047857;
+      --laranja: #EA580C;
+      --azul: #0D47A1;
+      --creme: #FAFAFA;
+      --escuro: #1E293B;
+      --cinza: #F8FAFC;
+      --texto: #334155;
+      --borda: #E2E8F0;
+      --erro: #FF4444;
+    }
+
+    body.dark-mode {
+      --creme: #0B1120;
+      --escuro: #F1F5F9;
+      --cinza: #1E293B;
+      --texto: #CBD5E1;
+      --borda: #334155;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--creme);
+      color: var(--texto);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 60px 20px 80px;
+      position: relative;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      background: #0F0F0F;
+      color: #E5E5E5;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg::before {
+      content: '';
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+      top: -200px;
+      left: -200px;
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    .bg::after {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+      bottom: -100px;
+      right: -100px;
+      animation: pulse 6s ease-in-out infinite 3s;
+    }
+
+    body.dark-mode .bg::before {
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, transparent 70%);
+    }
+
+    body.dark-mode .bg::after {
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%);
+    }
+
+    .grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    body.dark-mode .grid {
+      background-image:
+        linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px);
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+
+      50% {
+        transform: scale(1.15);
+        opacity: 1;
+      }
+    }
+
+    .card {
+      position: relative;
+      z-index: 10;
+      background: var(--creme);
+      border: 1.5px solid var(--borda);
+      border-radius: 28px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.08);
+      animation: slideUp 0.6s ease both;
+      transition: all 0.3s;
+    }
+
+    body.dark-mode .card {
+      background: #141414;
+      border-color: #2f2f2f;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--escuro);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 32px;
+      transition: color 0.3s;
+    }
+
+    body.dark-mode .logo {
+      color: #FFFFFF;
+    }
+
+    .logo span {
+      color: var(--verde);
+    }
+
+    h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--texto);
+      transition: color 0.3s;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--texto);
+      opacity: 0.65;
+      margin-bottom: 32px;
+      transition: all 0.3s;
+    }
+
+    /* TYPE SELECTOR */
+    .tipo-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .tipo-btn {
+      background: var(--cinza);
+      border: 1.5px solid var(--borda);
+      border-radius: 14px;
+      padding: 18px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s;
+      color: var(--texto);
+      opacity: 0.6;
+    }
+
+    body.dark-mode .tipo-btn {
+      background: #171717;
+      border-color: #2f2f2f;
+      color: #d0d0d0;
+    }
+
+    .tipo-btn .tipo-icon {
+      font-size: 28px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .tipo-btn .tipo-label {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      display: block;
+    }
+
+    .tipo-btn .tipo-desc {
+      font-size: 11px;
+      color: var(--texto);
+      opacity: 0.4;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .tipo-btn:hover {
+      border-color: var(--texto);
+      opacity: 0.9;
+    }
+
+    .tipo-btn.active {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: var(--verde);
+      color: var(--texto);
+      opacity: 1;
+    }
+
+    body.dark-mode .tipo-btn.active {
+      background: rgba(16, 185, 129, 0.15);
+      color: #FFFFFF;
+    }
+
+    .tipo-btn.active .tipo-desc {
+      opacity: 0.6;
+    }
+
+    /* FORM SECTIONS */
+    .form-section {
+      display: none;
+    }
+
+    .form-section.show {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0 20px;
+    }
+
+    .section-divider span {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--texto);
+      opacity: 0.4;
+      white-space: nowrap;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--borda);
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: var(--texto);
+      opacity: 0.7;
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+    }
+
+    input {
+      width: 100%;
+      background: var(--cinza);
+      border: 1.5px solid var(--borda);
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--texto);
+      outline: none;
+      transition: all 0.25s;
+    }
+
+    body.dark-mode input {
+      background: #171717;
+      border-color: #2f2f2f;
+      color: #f0f0f0;
+    }
+
+    input::placeholder {
+      color: var(--texto);
+      opacity: 0.35;
+    }
+
+    input:focus {
+      border-color: var(--verde);
+      background: rgba(16, 185, 129, 0.08);
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+    }
+
+    body.dark-mode input:focus {
+      background: rgba(16, 185, 129, 0.1);
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+    }
+
+    input.erro {
+      border-color: var(--erro);
+      background: rgba(255, 68, 68, 0.08);
+    }
+
+    body.dark-mode input.erro {
+      background: rgba(255, 68, 68, 0.12);
+    }
+
+    .erro-msg {
+      display: none;
+      font-size: 12px;
+      color: var(--erro);
+      margin-top: 5px;
+    }
+
+    .erro-msg.show {
+      display: block;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--verde-escuro);
+      color: #fff;
+      border: none;
+      padding: 16px;
+      border-radius: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(-100%);
+      transition: transform 0.3s;
+    }
+
+    .btn-submit:hover::before {
+      transform: translateX(0);
+    }
+
+    .btn-submit:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 32px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+
+    .btn-submit.lojista {
+      background: var(--laranja);
+    }
+
+    .btn-submit.lojista:hover {
+      box-shadow: 0 8px 32px rgba(255, 109, 0, 0.35);
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--texto);
+      opacity: 0.5;
+    }
+
+    .login-link a {
+      color: var(--verde);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .back-link {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--texto);
+      opacity: 0.5;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .back-link:hover {
+      color: var(--verde);
+      opacity: 1;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 36px 24px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg"></div>
+  <div class="grid"></div>
+
+  <a href="../index.html" class="back-link">← Voltar ao site</a>
+
+  <div class="card">
+    <a href="../index.html" class="logo">Comércio<span>BES</span></a>
+
+    <h1>Criar conta</h1>
+    <p class="subtitle">Escolha o tipo de conta que deseja criar</p>
+
+    <div class="tipo-selector">
+      <div class="tipo-btn active" id="btn-cliente" onclick="selecionarTipo('cliente')">
+        <span class="tipo-icon">👤</span>
+        <span class="tipo-label">Cliente</span>
+        <span class="tipo-desc">Explore e favorite comércios</span>
+      </div>
+      <div class="tipo-btn" id="btn-lojista" onclick="selecionarTipo('lojista')">
+        <span class="tipo-icon">🏪</span>
+        <span class="tipo-label">Lojista</span>
+        <span class="tipo-desc">Cadastre sua loja</span>
+      </div>
+    </div>
+
+    <!-- FORM CLIENTE -->
+    <div class="form-section show" id="form-cliente">
+      <div class="field">
+        <label for="c-nome">Nome completo</label>
+        <input type="text" id="c-nome" placeholder="João da Silva" oninput="limparErro('c-nome')">
+        <span class="erro-msg" id="c-nome-erro">Preencha seu nome completo.</span>
+      </div>
+      <div class="field">
+        <label for="c-email">E-mail</label>
+        <input type="email" id="c-email" placeholder="seu@email.com" oninput="limparErro('c-email')">
+        <span class="erro-msg" id="c-email-erro">Preencha um e-mail válido.</span>
+      </div>
+      <div class="field">
+        <label for="c-tel">Telefone</label>
+        <input type="tel" id="c-tel" placeholder="(16) 99999-9999" oninput="mascararTel(this); limparErro('c-tel')">
+        <span class="erro-msg" id="c-tel-erro">Preencha seu telefone.</span>
+      </div>
+      <div class="field">
+        <label for="c-senha">Senha <span style="font-size:10px;opacity:0.4;text-transform:none;letter-spacing:0">(mínimo
+            6 caracteres)</span></label>
+        <input type="password" id="c-senha" placeholder="••••••••" oninput="limparErro('c-senha')">
+        <span class="erro-msg" id="c-senha-erro">Senha deve ter ao menos 6 caracteres.</span>
+      </div>
+      <button class="btn-submit" onclick="cadastrarCliente()">Virar Cliente →</button>
+    </div>
+
+    <!-- FORM LOJISTA -->
+    <div class="form-section" id="form-lojista">
+      <div class="section-divider"><span>Dados pessoais</span></div>
+
+      <div class="field">
+        <label for="l-nome">Nome completo</label>
+        <input type="text" id="l-nome" placeholder="João da Silva" oninput="limparErro('l-nome')">
+        <span class="erro-msg" id="l-nome-erro">Preencha seu nome completo.</span>
+      </div>
+      <div class="field">
+        <label for="l-email">E-mail</label>
+        <input type="email" id="l-email" placeholder="seu@email.com" oninput="limparErro('l-email')">
+        <span class="erro-msg" id="l-email-erro">Preencha um e-mail válido.</span>
+      </div>
+      <div class="field">
+        <label for="l-tel">Telefone</label>
+        <input type="tel" id="l-tel" placeholder="(16) 99999-9999" oninput="mascararTel(this); limparErro('l-tel')">
+        <span class="erro-msg" id="l-tel-erro">Preencha seu telefone.</span>
+      </div>
+      <div class="field">
+        <label for="l-senha">Senha <span style="font-size:10px;opacity:0.4;text-transform:none;letter-spacing:0">(mínimo
+            6 caracteres)</span></label>
+        <input type="password" id="l-senha" placeholder="••••••••" oninput="limparErro('l-senha')">
+        <span class="erro-msg" id="l-senha-erro">Senha deve ter ao menos 6 caracteres.</span>
+      </div>
+
+      <div class="section-divider"><span>Dados da loja</span></div>
+
+      <div class="field">
+        <label for="l-loja">Nome da loja</label>
+        <input type="text" id="l-loja" placeholder="Ex: Pizzaria Bella Massa" oninput="limparErro('l-loja')">
+        <span class="erro-msg" id="l-loja-erro">Preencha o nome da sua loja.</span>
+      </div>
+      <div class="field">
+        <label for="l-cpfcnpj">CPF ou CNPJ do responsável</label>
+        <input type="text" id="l-cpfcnpj" placeholder="000.000.000-00 ou 00.000.000/0000-00" oninput="limparErro('l-cpfcnpj')">
+        <span class="erro-msg" id="l-cpfcnpj-erro">Informe um CPF (11 dígitos) ou CNPJ (14 dígitos) válido.</span>
+      </div>
+      <div class="field">
+        <label for="l-whats">WhatsApp da loja</label>
+        <input type="tel" id="l-whats" placeholder="5516999999999" oninput="limparErro('l-whats')">
+        <span class="erro-msg" id="l-whats-erro">Preencha o WhatsApp da loja.</span>
+      </div>
+      <div class="field">
+        <label for="l-endereco">Endereço comercial (opcional)</label>
+        <input type="text" id="l-endereco" placeholder="Rua, número, bairro" oninput="limparErro('l-endereco')">
+      </div>
+
+      <button class="btn-submit lojista" onclick="cadastrarLojista()">Criar Conta Lojista →</button>
+    </div>
+
+    <p class="login-link">Já tem uma conta? <a href="login.html">Entrar aqui</a></p>
+  </div>
+
+  <script type="module">
+    import { Auth } from '../js/modules/auth.js';
+
+    let tipoAtivo = 'cliente';
+
+    function selecionarTipo(tipo) {
+      tipoAtivo = tipo;
+      document.getElementById('btn-cliente').classList.toggle('active', tipo === 'cliente');
+      document.getElementById('btn-lojista').classList.toggle('active', tipo === 'lojista');
+      document.getElementById('form-cliente').classList.toggle('show', tipo === 'cliente');
+      document.getElementById('form-lojista').classList.toggle('show', tipo === 'lojista');
+    }
+
+    function mascararTel(input) {
+      let v = input.value.replace(/\D/g, '');
+      if (v.length > 11) v = v.slice(0, 11);
+      if (v.length > 10) v = v.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+      else if (v.length > 6) v = v.replace(/^(\d{2})(\d{4,5})(\d{0,4})/, '($1) $2-$3');
+      else if (v.length > 2) v = v.replace(/^(\d{2})(\d+)/, '($1) $2');
+      input.value = v;
+    }
+
+    function mostrarErro(id, msg) {
+      document.getElementById(id).classList.add('erro');
+      const el = document.getElementById(id + '-erro');
+      if (el) { el.textContent = msg; el.classList.add('show'); }
+    }
+
+    function limparErro(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('erro');
+      const erroEl = document.getElementById(id + '-erro');
+      if (erroEl) erroEl.classList.remove('show');
+    }
+
+    function validarEmail(e) { return e.includes('@') && e.includes('.'); }
+
+    function apenasDigitos(v) {
+      return String(v || '').replace(/\D/g, '');
+    }
+
+    function validarCpfCnpj(v) {
+      const n = apenasDigitos(v);
+      return n.length === 11 || n.length === 14;
+    }
+
+    function cadastrarCliente() {
+      let ok = true;
+      const nome = document.getElementById('c-nome').value.trim();
+      const email = document.getElementById('c-email').value.trim();
+      const tel = document.getElementById('c-tel').value.trim();
+      const senha = document.getElementById('c-senha').value;
+
+      if (!nome) { mostrarErro('c-nome', 'Preencha seu nome completo.'); ok = false; }
+      if (!email || !validarEmail(email)) { mostrarErro('c-email', 'Preencha um e-mail válido.'); ok = false; }
+      if (!tel) { mostrarErro('c-tel', 'Preencha seu telefone.'); ok = false; }
+      if (senha.length < 6) { mostrarErro('c-senha', 'Senha deve ter ao menos 6 caracteres.'); ok = false; }
+
+      if (!ok) return;
+
+      Auth.register(nome, email, tel, senha, 'cliente').then(res => {
+        if (!res.ok) {
+          mostrarErro('c-email', res.msg || 'Erro ao registrar.');
+          return;
+        }
+        localStorage.setItem('skipWelcome', 'true');
+        window.location.href = '/minha-conta';
+      }).catch(err => {
+        mostrarErro('c-email', 'Erro: ' + err.message);
+      });
+    }
+
+    function cadastrarLojista() {
+      let ok = true;
+      const nome = document.getElementById('l-nome').value.trim();
+      const email = document.getElementById('l-email').value.trim();
+      const tel = document.getElementById('l-tel').value.trim();
+      const senha = document.getElementById('l-senha').value;
+      const loja = document.getElementById('l-loja').value.trim();
+      const cpfCnpj = document.getElementById('l-cpfcnpj').value.trim();
+      const whats = document.getElementById('l-whats').value.trim();
+      const enderecoComercial = document.getElementById('l-endereco').value.trim();
+
+      if (!nome) { mostrarErro('l-nome', 'Preencha seu nome completo.'); ok = false; }
+      if (!email || !validarEmail(email)) { mostrarErro('l-email', 'Preencha um e-mail válido.'); ok = false; }
+      if (!tel) { mostrarErro('l-tel', 'Preencha seu telefone.'); ok = false; }
+      if (senha.length < 6) { mostrarErro('l-senha', 'Senha deve ter ao menos 6 caracteres.'); ok = false; }
+      if (!loja) { mostrarErro('l-loja', 'Preencha o nome da sua loja.'); ok = false; }
+      if (!validarCpfCnpj(cpfCnpj)) { mostrarErro('l-cpfcnpj', 'Informe um CPF (11 dígitos) ou CNPJ (14 dígitos) válido.'); ok = false; }
+      if (!whats) { mostrarErro('l-whats', 'Preencha o WhatsApp da loja.'); ok = false; }
+
+      if (!ok) return;
+
+      Auth.register(nome, email, tel, senha, 'lojista', {
+        nomeFantasia: loja,
+        cpfCnpj: apenasDigitos(cpfCnpj),
+        telefoneComercial: apenasDigitos(whats),
+        enderecoComercial: enderecoComercial || undefined
+      }).then(res => {
+        if (!res.ok) {
+          mostrarErro('l-email', res.msg || 'Erro ao registrar.');
+          return;
+        }
+        localStorage.setItem('skipWelcome', 'true');
+        window.location.href = '/minha-conta';
+      }).catch(err => {
+        mostrarErro('l-email', 'Erro: ' + err.message);
+      });
+    }
+
+    // Expor para inline handlers (onclick/oninput no HTML)
+    window.selecionarTipo = selecionarTipo;
+    window.mascararTel = mascararTel;
+    window.limparErro = limparErro;
+    window.cadastrarCliente = cadastrarCliente;
+    window.cadastrarLojista = cadastrarLojista;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('bes_dark_mode') === '1') {
+        document.body.classList.add('dark-mode');
+      }
+    });
+  </script>
+</body>
+
+</html>
